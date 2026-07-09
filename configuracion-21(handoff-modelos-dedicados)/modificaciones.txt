@@ -1,0 +1,52 @@
+================================================================================
+MODIFICACIONES: configuracion-21
+Comparación con: configuracion-20
+================================================================================
+
+Origen: uno/dino-runner14/Old 3/ (solo config: opencode.json, AGENTS.md, .opencode/)
+AGENTS.md: PRESENTE (ACTUALIZADO — 237 líneas, version más completa que config-19/20)
+AGENTS.md DIFERENCIAS: INCLUYE sección "Modelos model-* en Ollama" (NUEVA),
+  instructivo para verificar con ollama ls. Incluye "event listener cleanup"
+  en angular-architecture. Incluye "signals inmutabilidad, event listeners, magic numbers"
+  en angular-patterns.
+.opencode/skills/: skills activas (mismas que config-19/20)
+.opencode/models/: subdirectorio con modelos
+resultado/: NO (solo archivos de configuración)
+CONFIGS: opencode.json (único)
+
+CAMBIO DE PARADIGMA:
+  config-20: copia de seguridad con límites de toolcalls reducidos.
+  config-21: CASI IDÉNTICO a config-19 (restaura toolcalls: qa-validator 10,
+             verifier 6). Es la versión más completa de los 3 backups.
+             DIFERENCIAS RESPECTO A config-19/20:
+             - opencode.json: prompt del build usa \\n (escapado literal doble)
+               en lugar de \n (simple). Posiblemente un error de formato.
+             - AGENTS.md: versión más extensa con sección de modelos Ollama.
+             - angular-architecture: incluye DestroyRef, event listener cleanup.
+             - angular-patterns: incluye signals inmutabilidad, event listeners,
+               magic numbers.
+             - scaffolding-verification: NUEVA skill cargada por Package Manager
+               y Orquestador (en config-19/20 solo la cargaba Package Manager).
+             - .opencode/package.json: puede diferir en contenido.
+
+PROBLEMAS REFERIDOS:
+  1. Documentación de modelos: se agrega nota sobre modelos model-* en Ollama
+     para que el usuario verifique su existencia antes de usar.
+  2. Patrones Angular mejor documentados: DestroyRef, event listeners cleanup,
+     signals inmutabilidad, magic numbers.
+  3. scaffolding-verification ahora también la carga el Orquestador (antes solo
+     Package Manager).
+  4. Prompt de build: posible error de escapado (\\n vs \n).
+
+AGENTES: MISMOS que config-19 con toolcalls restaurados.
+
+PROVEEDORES: MISMOS que config-19.
+
+SKILLS: MISMAS que config-19 + scaffolding-verification ahora cargada también
+  por Orquestador.
+
+AGENTS.md: VERSIÓN MÁS COMPLETA de los 3 backups (237 líneas vs 232).
+  Incluye sección "Modelos model-* en Ollama".
+
+RESULTADO: NO (solo archivos de configuración — backup de configuración).
+================================================================================

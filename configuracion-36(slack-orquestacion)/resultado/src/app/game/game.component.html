@@ -1,0 +1,13 @@
+<div class="game-container" 
+      [attr.data-game-state]="gameOver() ? 'game-over' : (isPlaying() ? 'playing' : 'idle')"
+      [attr.data-score]="score()"
+      [attr.data-dino-y]="dinoY()"
+      [attr.data-jump-count]="jumpCount()"
+      [attr.data-obstacle-count]="obstacleCount()"
+      [attr.data-speed]="speed().toFixed(1)">
+  <canvas #gameCanvas width="800" height="300" class="game-canvas"></canvas>
+  <div class="game-info">
+    <p>Score: {{ score() }}</p>
+    <p>Speed: {{ speed().toFixed(1) }}</p>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="game-container">
+  <canvas #gameCanvas class="game-canvas"></canvas>
+
+  @if (gamePhase() === 'welcome') {
+    <div class="overlay">
+      <h1 class="game-title">DINO RUNNER</h1>
+      <div class="instructions">
+        <p>Presiona ESPACIO o &uarr; para empezar</p>
+        <p class="double-jump-hint">Presiona dos veces seguidas para <strong>salto doble</strong></p>
+      </div>
+    </div>
+  }
+
+  @if (gamePhase() === 'gameOver') {
+    <div class="overlay gameover-overlay">
+      <h2 class="gameover-title">GAME OVER</h2>
+      <p class="final-score">Score: <strong>{{ score() }}</strong></p>
+      <p class="restart-hint">Presiona ESPACIO para reiniciar</p>
+    </div>
+  }
+
+  <div class="game-ui">
+    <div class="score">Score: {{ score() }}</div>
+    <div class="high-score">HI: {{ highScore() }}</div>
+  </div>
+</div>

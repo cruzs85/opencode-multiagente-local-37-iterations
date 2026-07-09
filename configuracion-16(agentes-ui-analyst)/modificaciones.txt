@@ -1,0 +1,113 @@
+================================================================================
+MODIFICACIONES: configuracion-16
+Comparación con: configuracion-15
+================================================================================
+
+Origen: uno/dino-runner11/ (Dinosaur Runner, Angular, 1 config)
+AGENTS.md: PRESENTE (ACTUALIZADO con nuevo rol UI Designer y flujo revisado)
+.opencode/skills/: skills activas (NUEVAS: agent-scope-limits, bug-investigation,
+                   design-verification, qa-decision-engine, ui-design-system, unit-testing)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (único)
+
+CAMBIO DE PARADIGMA:
+  config-15: 9 agentes, orquestador big-pickle, flujo tradicional.
+  config-16: CAMBIO DE ARQUITECTURA. 10 agentes con nuevo @ui-designer.
+             Flujo REEMPLAZADO: orquestador → ui-designer → code-writer → verifier → qa-validator.
+             Se UNIFICAN qa-validator + e2e-validator + unit-tester en un solo
+             @qa-validator que decide autónomamente qué tests ejecutar (qa-decision-engine).
+             @explorer se SIMPLIFICA: solo TIPO A (ejecución) + TIPO B (búsqueda).
+             @analyst (NUEVO): agente de análisis estructurado multi-archivo TIPO C.
+             @ui-designer (NUEVO): diseño de interfaces visuales con librerías UI.
+             @package-manager: permisos npm install* cambiados de "ask" a "allow".
+
+PROBLEMAS REFERIDOS:
+  1. Falta de agente de diseño: se crea @ui-designer para investigar librerías UI
+     (PrimeNG, Angular Material) y producir especificaciones.
+  2. QA unificado: en vez de 3 agentes (qa-validator, e2e-validator, unit-tester),
+     ahora un solo qa-validator con qa-decision-engine decide tests según el cambio.
+  3. Skills de diseño: ui-design-system, design-verification para verificación visual.
+  4. Investigación de bugs: bug-investigation como skill formal para explorer.
+  5. Límites de alcance: agent-scope-limits para correcciones mínimas.
+  6. Tests unitarios: unit-testing como skill para qa-validator.
+  7. explorer ya no carga skills ni hace análisis profundo (nuevo @analyst).
+  8. Se eliminan unit-tester y e2e-validator como agentes independientes.
+
+AGENTES (vs config-15):
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (SIN CAMBIO)
+   - Prompt: NUEVOS agentes en delegación: @ui-designer, @analyst.
+     SE ELIMINAN @e2e-validator y @unit-tester.
+     Nuevas reglas de formato estrictos (=== INSTRUCCIONES === exacto).
+   - Permisos: SIN CAMBIO.
+
+2. decomposer: SIN CAMBIO.
+
+3. explorer
+   - Modelo: ollama/qwen3-coder:30b (SIN CAMBIO)
+   - Prompt: SIMPLIFICADO. Solo TIPO A + TIPO B. Ya NO hace análisis (TIPO C → @analyst).
+     Anti-bucle hardcodeado (no requiere cargar skills).
+     Se agrega EXCEPCION: bug-investigation si orquestador lo indica.
+   - Permisos: SIN CAMBIO respecto a config-15.
+
+4. researcher
+   - Prompt: SE AGREGA "No investigues librerías de UI. Esas las investiga @ui-designer."
+   - Permisos: SIN CAMBIO.
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b (SIN CAMBIO)
+   - Prompt: Anti-bucle reforzado. Permisos skills más restrictivos
+     (anti-loop-protocol + json-safe-edit solamente).
+
+6. qa-validator (REFORMATEADO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: AHORA UNIFICADO. Fases: build → clasificación → tests → reporte.
+     Skills: qa-protocol, anti-loop-protocol, agent-scope-limits,
+     qa-decision-engine, unit-testing, e2e-protocol, angular-architecture, angular-patterns.
+   - Permisos: AHORA PERMITIDO edit en *.spec.ts y *.e2e.spec.ts.
+     bash ampliado: npx playwright test*, kill-port, comandos sistema.
+
+7. package-manager
+   - Prompt: "No investigues qué paquete instalar. Límite de UI designer."
+   - Permisos: npm install* → allow (era "ask" en config-14/15).
+     Skills más restrictivos: solo angular-architecture, angular-scaffolding, angular-packages.
+
+8. verifier (REFORMATEADO)
+   - Prompt: SE AGREGAN skills: design-verification.
+     NUEVAS skills permitidas: design-verification.
+   - Permisos: skills permitidas explícitamente (allowlist).
+
+9. analyst (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: TIPO C — análisis estructurado. Skills: analyst-protocol, anti-loop-protocol.
+     Bash solo lectura. Fingerprint: ANALYST::objetivo::ruta::fecha.
+   - Permisos: edit deny, bash restrict (node, head, wc, cat, ls, echo, find),
+     webfetch allow, skill analyst-protocol + anti-loop-protocol + mysql.
+     Fallback: opencode/big-pickle.
+
+10. ui-designer (NUEVO)
+    - Modelo: ollama/qwen3-coder:30b
+    - Prompt: Diseño de interfaces. Skills: ui-design-system, angular-architecture,
+      angular-patterns, anti-loop-protocol, design-verification.
+      Investiga con webfetch documentación de librerías UI.
+    - Permisos: edit deny, bash deny, webfetch allow, websearch allow,
+      task code-writer + package-manager + decomposer.
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos. Mismas opciones.
+  2. plugin: ["opencode-link", "@sillybit/opencode-plugin-everynotify"] (IGUAL)
+
+SKILLS:
+  NUEVAS (vs config-15):
+  - agent-scope-limits, analyst-protocol, bug-investigation, design-verification
+  - qa-decision-engine, ui-design-system, unit-testing
+  DESAPARECEN: e2e-protocol, explorer-protocol, game-loop-patterns,
+    integration-verification, notifications, mysql, post-implementation (se fusionan)
+
+AGENTS.md: ACTUALIZADO. Nuevo diagrama con ui-designer. Flujo modificado.
+  Tabla de skills ampliada con 25 skills. Documentación de cada agente actualizada.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

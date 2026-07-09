@@ -1,0 +1,16 @@
+<div class="game-over-container">
+  <h1 class="game-over-title">GAME OVER</h1>
+  
+  <div class="score-container">
+    <p class="score">Puntuación: <span class="score-value">{{ gameService.score() }}</span></p>
+    <p class="high-score">Récord: <span class="high-score-value">{{ highScoreService.getHighScore() }}</span></p>
+  </div>
+
+  @if (gameService.score() > highScoreService.getHighScore()) {
+    <p class="new-record">¡Nuevo Récord!</p>
+  }
+
+  <div class="button-container">
+    <button class="neon-button" (click)="playAgain()">REINTENTAR</button>
+    <button class="neon-button" (click)="goHome()">INICIO</button>
+  </div>

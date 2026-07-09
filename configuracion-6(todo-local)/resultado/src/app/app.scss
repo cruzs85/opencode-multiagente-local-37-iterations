@@ -1,0 +1,231 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background: #f7f7f7;
+  font-family: 'Courier New', 'Courier', monospace;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.game-wrapper {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ─── Header de puntuación ─────────────────────────────────────── */
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.score-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.score-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #535353;
+}
+
+.score-value.record {
+  color: #757575;
+}
+
+/* ─── Contenedor del juego ─────────────────────────────────────── */
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Suelo ──────────────────────────────────────────────────────── */
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #535353;
+  border-radius: 2px;
+}
+
+/* ─── Dinosaurio ─────────────────────────────────────────────────── */
+.dino {
+  position: absolute;
+  background: #535353;
+  border-radius: 3px;
+  z-index: 10;
+  transition: none;
+
+  /* Cabeza (::before) */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 40%;
+    background: #535353;
+    top: -30%;
+    right: -10%;
+    border-radius: 3px;
+    z-index: 11;
+  }
+
+  /* Cola (::after) */
+  &::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 16%;
+    background: #535353;
+    bottom: 10%;
+    left: -30%;
+    border-radius: 2px;
+    z-index: 9;
+  }
+}
+
+/* ─── Obstáculos ─────────────────────────────────────────────────── */
+.obstacle {
+  position: absolute;
+  bottom: 4px;
+  background: #535353;
+  border-radius: 2px;
+  z-index: 5;
+}
+
+/* ─── Overlay messages ──────────────────────────────────────────── */
+.overlay-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 50;
+  text-align: center;
+  padding: 20px;
+}
+
+.start-message {
+  gap: 12px;
+}
+
+.dino-icon {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.start-message p {
+  font-size: 16px;
+  color: #535353;
+  margin: 0;
+}
+
+.start-message .sub-text {
+  font-size: 13px;
+  color: #999;
+  margin-top: 4px;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  background: #f0f0f0;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ─── Game Over ─────────────────────────────────────────────────────── */
+.game-over-message {
+  gap: 8px;
+}
+
+.game-over-message h2 {
+  font-size: 32px;
+  color: #535353;
+  margin: 0 0 12px 0;
+  letter-spacing: 4px;
+}
+
+.final-score,
+.final-record {
+  font-size: 16px;
+  color: #535353;
+  margin: 4px 0;
+}
+
+.final-score strong,
+.final-record strong {
+  font-size: 20px;
+}
+
+.restart-btn {
+  margin-top: 16px;
+  padding: 10px 32px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #fff;
+  background: #535353;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: background 0.15s ease;
+}
+
+.restart-btn:hover {
+  background: #333;
+}
+
+.restart-btn:active {
+  transform: scale(0.97);
+}
+
+/* ─── Debug overlay ──────────────────────────────────────────────── */
+.debug-info {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: #00cc44;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 4px 10px;
+  border-radius: 3px;
+  z-index: 100;
+  letter-spacing: 0.5px;
+  user-select: none;
+  pointer-events: none;
+}

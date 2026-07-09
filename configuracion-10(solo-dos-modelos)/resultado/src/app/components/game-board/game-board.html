@@ -1,0 +1,11 @@
+<div class="game-container">
+  <canvas #gameCanvas></canvas>
+  @if (gameEngine.gameState() === 'game-over') {
+    <div class="game-over-overlay">
+      <h2>GAME OVER</h2>
+      <p>Puntaje: {{ gameEngine.score() }}</p>
+      <p>Récord: {{ scoreService.highScore() }}</p>
+      <button (click)="gameEngine.startGame()">Reintentar</button>
+    </div>
+  }
+</div>

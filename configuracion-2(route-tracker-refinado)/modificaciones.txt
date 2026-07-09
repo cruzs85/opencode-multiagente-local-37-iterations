@@ -1,0 +1,85 @@
+================================================================================
+MODIFICACIONES: configuracion-2(route-tracker-refinado)
+Comparación con: configuracion-1(route-tracker-v1)
+================================================================================
+
+Origen: route-tracker/opencode.json (versión modificada de opencode-V1.json)
+AGENTS.md: Sin cambios (idéntico a configuracion-1)
+.opencode/skills/: Sin cambios (7 skills, e2e-protocol vacío)
+resultado/: Mismo proyecto Angular que configuracion-1
+
+PROBLEMAS REFERIDOS:
+  1. El uso de DeepSeek V3.2 para code-writing generaba código inconsistente
+     y con frecuencia errores de compilación que requerían múltiples
+     correcciones.
+  2. El modelo GLM-4.7 de Z.AI no descomponía adecuadamente las tareas
+     complejas en pasos atómicos ejecutables.
+  3. El explorador Mimo V2 Flash era inestable y se quedaba ciclado en
+     búsquedas sin resultados.
+  4. El researcher local (DeepSeek Coder en Ollama) causaba latencia y
+     problemas de conexión, bloqueando el flujo de trabajo.
+  5. La API key de OpenRouter estaba expuesta en el archivo de configuración
+     que se subió a GitHub, representando un riesgo de seguridad.
+  6. Los proveedores copilot, zai-coding-plan tenían modelos que no estaban
+     disponibles o no funcionaban correctamente.
+  7. El orquestador invocaba a @unit-tester incluso para cambios triviales
+     (CSS, HTML, imports), desperdiciando tokens y tiempo.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Prompt: ELIMINADAS las reglas 'REGLA EXPLORACIÓN' y 'REGLA FALLOS'.
+     AGREGADAS reglas: límite de 2 iteraciones para mismos errores y
+     eficiencia (delegar a @decomposer solo si más de 1 archivo).
+   - Se eliminó el punto 4 detallado de @unit-tester y se simplificó.
+
+2. decomposer
+   - Modelo: zai-coding-plan/glm-4.7 → openrouter/qwen/qwen-2.5-coder-32b-instruct
+   - Fallback: openrouter/deepseek/deepseek-v3.2 → openrouter/qwen/qwen-turbo
+   - Description: simplificada (eliminado "y técnicos")
+   - Prompt: eliminado paso 5 (@explorer con mapa de dependencias)
+
+3. explorer
+   - Modelo: openrouter/xiaomi/mimo-v2-flash → openrouter/qwen/qwen-turbo
+   - Description: simplificada
+
+4. researcher
+   - Modelo: ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M →
+             openrouter/qwen/qwen-turbo
+   - Description: eliminada referencia a OSRM y skill osrm-integration
+
+5. code-writer
+   - Modelo: openrouter/deepseek/deepseek-v3.2 →
+             openrouter/qwen/qwen-2.5-coder-32b-instruct
+   - Fallback: opencode/big-pickle → openrouter/qwen/qwen-turbo
+   - Prompt: eliminado "Recibirás instrucciones del @decomposer"
+
+6. qa-validator
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → openrouter/qwen/qwen-turbo
+   - Fallback: ollama/qwen3:30b-a3b → openrouter/qwen/qwen-2.5-coder-32b-instruct
+   - Prompt: eliminados pasos de validación Leaflet y reglas de escalado
+
+7. e2e-validator
+   - Modelo: openrouter/qwen/qwen3-coder-next → openrouter/qwen/qwen-turbo
+   - Fallback: ollama/qwen3:30b-a3b → openrouter/qwen/qwen-turbo
+
+8. unit-tester
+   - Modelo: openrouter/deepseek/deepseek-v3.2 →
+             openrouter/qwen/qwen-2.5-coder-32b-instruct
+   - Fallback: openrouter/qwen/qwen3-coder-next → openrouter/qwen/qwen-turbo
+
+PROVEEDORES:
+
+1. copilot (GitHub Copilot): ELIMINADO
+2. zai-coding-plan (Z.AI): ELIMINADO
+3. openrouter: API key real → placeholder "sk-or-v1-XXXXXXXXXX";
+   modelos minimax/m2.5-lightning, deepseek/deepseek-v3.2,
+   qwen/qwen3-coder-next ELIMINADOS.
+
+SKILLS: Sin cambios.
+
+AGENTS.md: Sin cambios.
+
+RESULTADO: Proyecto Angular completo (idéntico a configuracion-1). Con esta
+           configuración se generó el build de producción (dist/).
+================================================================================

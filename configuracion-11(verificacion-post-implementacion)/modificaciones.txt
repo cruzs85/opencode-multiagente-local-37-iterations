@@ -1,0 +1,109 @@
+================================================================================
+MODIFICACIONES: configuracion-11
+Comparación con: configuracion-10
+================================================================================
+
+Origen: uno/dino-runner6/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (con regla anti-contradicción y orchestrator-protocol)
+.opencode/skills/: 8 skills activas
+resultado/: Proyecto Angular (src/, package.json, angular.json)
+
+CAMBIO DE PARADIGMA:
+  config-10 y config-11: AMBAS 100% local (Ollama), mismos 2 modelos
+  (qwen3-coder:30b, qwen3:32b). Skills con ruta relativa.
+  CONFIG-11 INTRODUCE: FASE DE VERIFICACIÓN POST-IMPLEMENTACIÓN,
+  MODO SOLO-REPORTE para QA, nuevas skills referenciadas
+  (angular-boilerplate-check, contract-consistency, game-loop-patterns).
+
+PROBLEMAS REFERIDOS:
+  1. El orquestador no verificaba la calidad post-implementación antes
+     de pasar a QA. Se agrega FASE DE VERIFICACIÓN POST-IMPLEMENTACIÓN
+     con @explorer verificando: código huérfano, contratos, boilerplate,
+     game loop.
+  2. qa-validator modificaba código directamente (reescribía archivos
+     completos) en lugar de solo reportar errores. Se cambia a
+     MODO SOLO-REPORTE con reglas estrictas: PERMITIDO reportar y
+     delegar, PROHIBIDO reescribir, cambiar estructura, añadir
+     dependencias, refactorizar sin errores.
+  3. code-writer no verificaba reglas específicas de Angular (standalone,
+     styleUrl, afterNextRender) ni de game loop (deltaTime). Se agregan
+     nuevas skills: contract-consistency, game-loop-patterns.
+  4. No existían skills de verificación: angular-boilerplate-check,
+     contract-consistency, integration-verification, game-loop-patterns.
+     Se referencian en prompts pero pueden no existir físicamente.
+  5. package-manager en config-10 ya tenía permisos completos. Se mantienen.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: SE AGREGA FASE DE VERIFICACIÓN POST-IMPLEMENTACIÓN:
+     1. @explorer verifica código huérfano, contratos, boilerplate,
+        game loop (skills: angular-boilerplate-check, contract-consistency,
+        integration-verification, game-loop-patterns)
+     2. Recibir reporte y decidir (falso positivo, bug real, estructural)
+     3. Solo sin hallazgos → delegar a @qa-validator
+     4. Si qa-validator éxito → delegar a @e2e-validator
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (igual)
+   - Prompt: idéntico
+
+3. explorer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: idéntico
+
+4. researcher
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGAN REGLAS:
+     1. Si componente Angular → standalone, styleUrl, afterNextRender
+     2. Si game loop → carga game-loop-patterns
+     3. Si múltiples archivos → carga contract-consistency
+     4. No refactorices código sin errores
+   - Se agrega ⚠️ REGLA OBLIGATORIA: cargar contract-verification
+     ANTES de implementar dependencias entre archivos
+
+6. qa-validator
+   - Modelo: ollama/qwen3:32b → ollama/qwen3-coder:30b (CAMBIO: vuelve
+     a qwen3-coder:30b)
+   - Fallback: ollama/qwen3-coder:30b → ollama/qwen3:32b
+   - Prompt: CAMBIO RADICAL a MODO SOLO-REPORTE:
+     - PERMITIDO: npm run build, npm test, reportar, delegar
+     - PROHIBIDO: reescribir archivos, cambiar estructura, añadir
+       dependencias, refactorizar sin errores, modificar lógica existente
+   - Skills: se agrega angular-boilerplate-check
+
+7. package-manager
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt/permisos: mismo que config-10
+
+8. e2e-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico
+
+9. unit-tester
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos que config-10. Idéntico.
+
+SKILLS:
+  NUEVAS SKILLS REFERENCIADAS (pueden no existir físicamente):
+  - angular-boilerplate-check (qa-validator)
+  - contract-consistency (code-writer)
+  - integration-verification (explorer/build)
+  - game-loop-patterns (code-writer/explorer)
+  CONSERVADAS: mismas 8 skills de config-10.
+
+AGENTS.md: PRESENTE. Mismo contenido (reglas anti-contradicción,
+  orchestrator-protocol). No refleja las nuevas skills referenciadas
+  en los prompts.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

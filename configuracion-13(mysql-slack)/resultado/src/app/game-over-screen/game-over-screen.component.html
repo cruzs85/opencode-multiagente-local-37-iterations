@@ -1,0 +1,18 @@
+<div class="game-over-container">
+  <h1 class="game-over-title">GAME OVER</h1>
+  
+  <div class="score-container">
+    <p class="score">Puntaje: {{ score() }}</p>
+    @if(score() >= highScore() && score() > 0) {
+      <p class="new-record">🎉 ¡NUEVO RÉCORD!</p>
+    }
+    <p class="high-score">🏆 Récord: {{ highScore() }}</p>
+  </div>
+
+  <div class="button-container">
+    <button class="btn-restart" (click)="restartGame()">Reintentar</button>
+    <button class="btn-menu" (click)="goToWelcome()">Menú Principal</button>
+  </div>
+
+  <p class="instructions">Presiona ESPACIO para reintentar</p>
+</div>

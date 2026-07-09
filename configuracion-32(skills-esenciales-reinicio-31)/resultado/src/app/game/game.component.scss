@@ -1,0 +1,48 @@
+.game-container {
+  position: relative;
+  background: #0a0a0f;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-canvas {
+  background: #07070b;
+  border: 1px solid #00f0ff;
+  box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+  max-width: 100%;
+}
+
+.hud-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.hud-score,
+.hud-high-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1rem;
+}
+
+.hud-score {
+  color: #ffe600;
+}
+
+.hud-high-score {
+  color: #00f0ff;
+}
+
+.instructions {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', monospace;
+  color: #00f0ff;
+  font-size: 0.8rem;
+  text-align: center;
+}

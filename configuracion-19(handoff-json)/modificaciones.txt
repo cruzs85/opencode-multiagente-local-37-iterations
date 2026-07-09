@@ -1,0 +1,118 @@
+================================================================================
+MODIFICACIONES: configuracion-19
+Comparación con: configuracion-18
+================================================================================
+
+Origen: uno/dino-runner14/Old/ (solo config: opencode.json, AGENTS.md, .opencode/)
+AGENTS.md: PRESENTE (ACTUALIZADO con sistema de handoff JSON)
+.opencode/skills/: skills activas (NUEVAS: handoff-protocol, error-routing,
+                   bootstrap-diagnostics, scaffolding-verification)
+.opencode/models/: NUEVO subdirectorio con modelos
+resultado/: NO (solo archivos de configuración)
+CONFIGS: opencode.json (único, RENOMBRADO de opencode-v1.json)
+
+CAMBIO DE PARADIGMA:
+  config-18: flujo tradicional, orquestador kimi-k2.6, comunicación directa task().
+  config-19: CAMBIO RADICAL. SISTEMA DE HANDOFF JSON entre agentes.
+             Comunicación entre agentes via archivos JSON en /tmp/handoff/{session_id}/.
+             Orquestador NUNCA escribe handoffs — solo pasa rutas.
+             NUEVOS subagentes con modelos dedicados: model-code-writer, model-verifier,
+             model-qa-validator, model-ui-designer (modelos independientes en Ollama).
+             Se AGREGAN modelos: model-ui-designer, model-code-writer, model-verifier,
+             model-qa-validator con ctx 32768 cada uno.
+             @explorer: NUEVO prompt con protocolo anti-loop estricto (máx 2 toolcalls).
+             @decomposer: OUTPUT EN TEXTO PLANO (no escribe archivos, no handoffs).
+             @ui-designer: usa MODELO DIFERENTE (ollama/qwen3:32b en vez de qwen3-coder:30b).
+             @code-writer: usa MODELO DIFERENTE (model-code-writer con ctx 32768).
+             @verifier: NUEVO como agente independiente con modelo model-verifier.
+             @qa-validator: usa MODELO DIFERENTE (model-qa-validator con ctx 32768).
+             @package-manager: scaffolding-verification agregado.
+             @analyst: modelo CAMBIADO a ollama/qwen3:32b (antes qwen3-coder:30b).
+
+PROBLEMAS REFERIDOS:
+  1. Comunicación frágil entre agentes: se implementa handoff JSON como protocolo
+     estándar de delegación asíncrona.
+  2. Modelos diferentes para cada rol: code-writer, verifier, qa-validator, ui-designer
+     ahora tienen modelos independientes con configuraciones específicas de contexto/temp.
+  3. Verifier independiente: ahora verifica código post-escritura con modelo propio.
+  4. Anti-bucle hardcodeado para explorer con límites estrictos.
+  5. Scaffolding problemático: se agrega scaffolding-verification para validar
+     estructura después de ng new.
+  6. Diagnóstico de bootstrap: bootstrap-diagnostics para página en blanco.
+  7. Error routing: error-routing para decidir destino de correcciones.
+  8. build bash permitido: node -e para Date.now() y timestamps (para session_id).
+
+AGENTES (cambios vs config-18):
+
+1. build (Orquestador)
+   - Modelo: opencode-go/kimi-k2.6 (SIN CAMBIO)
+   - Prompt: RENOVADO. Árbol de decisiones A/B/C con handoff.
+     Handoff: build NUNCA escribe handoffs, solo task() directo.
+     Skills: orchestrator-protocol, handoff-protocol, anti-loop-protocol,
+     partial-edit-protocol, post-implementation, notifications.
+   - Permisos: bash parcialmente permitido (node -e Date.now, new Date, pad).
+     skill: handoff-protocol permitido explícitamente.
+
+2. decomposer
+   - Prompt: OUTPUT TEXTO PLANO. NO escribe archivos, NO bash, NO handoffs.
+     Solo lee skills y responde en texto plano.
+   - Permisos: skill handoff-protocol permitido.
+
+3. explorer — COMPLETAMENTE RENOVADO
+   - Prompt: Nuevo protocolo anti-loop: máx 2 toolcalls, máx 1 reintento,
+     revisión de historial, NO slack_send_slack_message.
+     Clasificación: TIPO A, TIPO B. NO TIPO C.
+
+4. code-writer — NUEVO MODELO (model-code-writer)
+   - Modelo: ollama/qwen3-coder:30b → model-code-writer (ctx 32768, temp 0)
+   - Prompt: Método 2-pasos obligatorio (temp file + node -e writeFileSync).
+     Handoff: lee handoff JSON, escribe handoff para verifier.
+     Skills: handoff-protocol, anti-loop-protocol, json-safe-edit, angular-patterns,
+     angular-architecture.
+   - Permisos: bash restrict (mkdir, cat >, node -e, cd, echo, ls, wc).
+
+5. verifier — NUEVO AGENTE (era parte de qa-validator)
+   - Modelo: model-verifier (ctx 32768, temp 0)
+   - Prompt: Verificación post-escritura con handoff.
+     Skills: handoff-protocol, anti-loop-protocol, error-routing.
+     Límites: máx 6 toolcalls, MAX 2 SKILL LOADS.
+   - Permisos: edit deny, bash solo handoffs, skill.* deny con allowlist.
+
+6. qa-validator — NUEVO MODELO (model-qa-validator)
+   - Modelo: ollama/qwen3-coder:30b → model-qa-validator (ctx 32768, temp 0.1)
+   - Prompt: Handoff obligatorio. Skills: handoff-protocol, anti-loop-protocol,
+     carga condicional según fase.
+   - Límites: máx 10 toolcalls.
+
+7. ui-designer — MODELO CAMBIADO
+   - Modelo: ollama/qwen3-coder:30b → ollama/qwen3:32b (temp 0.1)
+   - Prompt: Handoff obligatorio. Produce specs JSON.
+     Skills: handoff-protocol, anti-loop-protocol, ui-design-system.
+
+8. analyst
+   - Modelo: ollama/qwen3-coder:30b → ollama/qwen3:32b (SIN CAMBIO de nombre,
+     pero ahora explicitado como qwen3:32b y no coder)
+
+9. package-manager
+   - Skills: scaffolding-verification agregado.
+
+PROVEEDORES:
+  - Ollama: MISMOS modelos + 4 NUEVOS modelos dedicados
+    (model-ui-designer, model-code-writer, model-verifier, model-qa-validator).
+  - plugin: ["opencode-link", "@sillybit/opencode-plugin-everynotify"] (IGUAL)
+
+SKILLS:
+  NUEVAS (vs config-18):
+  - bootstrap-diagnostics, error-routing, handoff-protocol, scaffolding-verification
+  DESAPARECEN o se fusionan: agent-scope-limits, angular-boilerplate-check,
+    angular-packages, angular-patterns, angular-scaffolding, contract-verification,
+    delegation-protocol, design-verification, e2e-protocol, game-loop-patterns,
+    integration-verification, notifications, post-implementation, post-write-verification,
+    qa-decision-engine, qa-protocol, task-decomposition, ui-design-system, unit-testing
+
+AGENTS.md: COMPLETAMENTE RENOVADO. Handoff JSON como sistema de comunicación.
+  Modelos dedicados por agente. Diagrama de flujo ampliado con handoffs.
+  Nota sobre tipos de agente en task() y fallback a "general".
+
+RESULTADO: NO (solo archivos de configuración — backup de configuración).
+================================================================================

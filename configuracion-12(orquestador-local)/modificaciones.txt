@@ -1,0 +1,60 @@
+================================================================================
+MODIFICACIONES: configuracion-12
+Comparación con: configuracion-11
+================================================================================
+
+Origen: uno/dino-runner7-local/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (con regla anti-contradicción y orchestrator-protocol)
+.opencode/skills/: 8 skills activas
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+
+CAMBIO DE PARADIGMA:
+  config-11 y config-12: ESTRUCTURALMENTE CASI IDÉNTICAS. Mismos
+  modelos (qwen3-coder:30b, qwen3:32b), mismo proveedor (Ollama),
+  misma FASE DE VERIFICACIÓN POST-IMPLEMENTACIÓN, mismo MODO
+  SOLO-REPORTE para QA. Skills con ruta relativa.
+  DIFERENCIA PRINCIPAL: el orquestador (build) usa qwen3:32b como
+  modelo principal en lugar de opencode/big-pickle.
+
+PROBLEMAS REFERIDOS:
+  1. opencode/big-pickle como orquestador no estaba disponible o su
+     uso era costoso en tokens. Se cambia a ollama/qwen3:32b como
+     modelo principal del orquestador, manteniendo big-pickle como fallback.
+  2. Todos los demás agentes, prompts y configuraciones son idénticos
+     a config-11. No hay cambios funcionales adicionales.
+  3. El cambio de modelo del orquestador puede afectar la calidad de
+     la orquestación (big-pickle vs qwen3:32b).
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle → ollama/qwen3:32b (CAMBIO PRINCIPAL)
+   - Fallback: opencode/big-pickle (igual)
+   - Prompt: IDÉNTICO a config-11 (FASE DE VERIFICACIÓN POST-IMPLEMENTACIÓN,
+     orquestador-protocol, anti-contradicción, delegación por lote)
+
+2. decomposer - IDÉNTICO a config-11
+3. explorer - IDÉNTICO a config-11
+4. researcher - IDÉNTICO a config-11
+5. code-writer - IDÉNTICO a config-11
+6. qa-validator - IDÉNTICO a config-11
+7. package-manager - IDÉNTICO a config-11
+8. e2e-validator - IDÉNTICO a config-11
+9. unit-tester - IDÉNTICO a config-11
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos que config-11.
+     - qwen3-coder:30b (num_ctx:262144, temperature:0.0 ...)
+     - qwen3:32b (num_ctx:40960, temperature:0.1 ...)
+
+SKILLS:
+  IDÉNTICO a config-11. Skills referenciadas: angular-boilerplate-check,
+  contract-consistency, integration-verification, game-loop-patterns
+  (pueden no existir físicamente).
+
+AGENTS.md: PRESENTE. Mismo contenido que config-11 (menciona
+  opencode/big-pickle como modelo del orquestador, aunque en el JSON
+  se usa ollama/qwen3:32b — posible discrepancia).
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

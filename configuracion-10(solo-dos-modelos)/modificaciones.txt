@@ -1,0 +1,88 @@
+================================================================================
+MODIFICACIONES: configuracion-10
+Comparación con: configuracion-9(anti-contradiccion)
+================================================================================
+
+Origen: uno/dino-runner5/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (con regla anti-contradicción y orchestrator-protocol)
+.opencode/skills/: 8 skills activas
+resultado/: Proyecto Angular (src/, package.json, angular.json, vitest.config.ts)
+CONFIGS: solo opencode.json (1 config, sin alternativa como config-9)
+
+CAMBIO DE PARADIGMA:
+  config-9 y config-10: AMBAS 100% local (Ollama), mismos modelos
+  (qwen3-coder:30b, qwen3:32b). SIN qwen3:8b (solo 2 modelos en config-10
+  vs 3 en config-9). Skills con ruta relativa.
+
+PROBLEMAS REFERIDOS:
+  1. explorer y researcher usaban qwen3:8b-q4_K_M en config-9, que no
+     está disponible en config-10 (solo qwen3-coder:30b y qwen3:32b).
+     Se elimina el modelo 8b y se usan modelos más grandes.
+  2. qa-validator en config-9 usaba qwen3-coder:30b. En config-10 se
+     cambia a qwen3:32b como modelo principal (no coder). Posible
+     problema de capacidad para análisis de código.
+  3. code-writer en config-9 ya tenía las reglas de bash+heredoc.
+     Se mantienen igual en config-10.
+  4. No se conservaba funcionalidad existente al corregir errores en
+     config-9 (se agrega en config-10).
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: MISMAS reglas que config-9 (orchestrator-protocol,
+     anti-contradicción, delegación por lote, no usar read para verificar)
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (igual)
+   - Prompt: idéntico a config-9
+
+3. explorer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: idéntico
+
+4. researcher
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: idéntico
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGA "Conserva localStorage, signals y toda la lógica
+     de negocio previa" (NUEVO respecto a config-9)
+   - Mismas reglas de bash+heredoc y edit
+
+6. qa-validator
+   - Modelo: ollama/qwen3-coder:30b → ollama/qwen3:32b (CAMBIO: ahora usa
+     qwen3:32b en lugar de qwen3-coder:30b)
+   - Fallback: ollama/qwen3:32b → ollama/qwen3-coder:30b (se invierte)
+
+7. package-manager
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: mismo que config-9 (angular-architecture, angular-scaffolding,
+     angular-packages)
+
+8. e2e-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico a config-9
+
+9. unit-tester
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico a config-9
+
+PROVEEDORES:
+  1. ollama: SE ELIMINA qwen3:8b. Solo 2 modelos:
+     - qwen3-coder:30b (num_ctx:262144, temperature:0.0, top_p:0.8,
+       top_k:20, repeat_penalty:1.0) — num_ctx aumentó de 32768 a 262144
+     - qwen3:32b (num_ctx:40960, temperature:0.1, top_p:0.95,
+       top_k:20, repeat_penalty:1.0)
+
+SKILLS:
+  MISMA LISTA que config-9. SIN cambios.
+
+AGENTS.md: PRESENTE. Mismo contenido que config-9 (regla
+  anti-contradicción, orchestrator-protocol en tabla de skills).
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

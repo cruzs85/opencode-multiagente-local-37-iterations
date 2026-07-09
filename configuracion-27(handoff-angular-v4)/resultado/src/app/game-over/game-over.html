@@ -1,0 +1,9 @@
+<div class='menu-center'>
+  <h1 class='neon-glow-red'>GAME OVER</h1>
+  <p class='score-final'>{{ score() }}</p>
+  @if (isNewRecord()) {
+    <p class='record'>NEW RECORD!</p>
+  }
+  <button class='neon-border-green' (click)='retry.emit()'>REINTENTAR</button>
+  <button class='neon-border-cyan' (click)='menu.emit()'>MENÚ</button>
+</div>

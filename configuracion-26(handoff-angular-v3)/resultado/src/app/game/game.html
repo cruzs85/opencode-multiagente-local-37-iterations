@@ -1,0 +1,14 @@
+<div class="game-container">
+  <canvas #gameCanvas class="game-canvas"></canvas>
+  <div class="hud">
+    <div class="score-display">
+      <span class="score-label">SCORE</span>
+      <span class="score-value">{{ scoreService.currentScore() }}</span>
+    </div>
+    <div class="high-score-display">
+      <span class="high-label">HIGH</span>
+      <span class="high-value">{{ scoreService.highScore() }}</span>
+    </div>
+  </div>
+  <p class="instructions">SPACE or ↑ to jump</p>
+</div>

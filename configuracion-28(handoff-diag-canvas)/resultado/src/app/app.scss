@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+app-welcome,
+app-game,
+app-game-over {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

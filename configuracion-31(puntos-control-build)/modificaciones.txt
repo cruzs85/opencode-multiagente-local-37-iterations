@@ -1,0 +1,25 @@
+MODIFICACIONES: configuracion-30 → configuracion-31
+==================================================
+Fuente: dino-runner22 | Comparado con: dino-runner21
+
+CAMBIOS EN opencode.json:
+- Cambios menores en instructions: "Usa opencode-mem para memoria persistente" (simplificado)
+- Build prompt: añadido BUILD CHECKPOINTS (checkpoints de build entre pasos)
+- Build prompt: añadidas Reglas 10 y 11 sobre code-writer no ejecuta builds y qa-validator debe leer templates
+- code-writer prompt: añadida restricción "NO crees tests (*.spec.ts, *.e2e.spec.ts)"
+- code-writer prompt: añadida restricción "NO ejecutes builds ni tests"
+- code-writer prompt: añadidas reglas de rutas y directorios
+- qa-validator prompt: workflow de creación de tests más detallado (PASO 1-3)
+- qa-validator prompt: añadidos permisos de escritura (write) para *.spec.ts y *.e2e.spec.ts
+- qa-validator prompt: añadido "node -e *writeFileSync*" a bash allowlist
+- Explorer: modelo cambiado de qwen3:32b a qwen3:32b (sin cambio), prompt actualizado con límites
+
+CAMBIOS EN AGENTS.md:
+- Añadidas Reglas 10 y 11 sobre code-writer (no ejecuta builds) y qa-validator (debe leer templates)
+- Tabla de skills actualizada: añadidas build-scaffolding, removida "model-explorer"
+- Texto en "Modelos": "Todos los subagentes usan model-agent-base" (sin mención a qwen3-coder)
+- Flujo de trabajo sin cambios
+
+TIPO: Config-only (sin proyecto Angular)
+- No hay carpeta resultado/
+- Sin proyecto Angular que copiar

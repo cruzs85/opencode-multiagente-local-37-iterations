@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.game-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-game);
+}
+
+.game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+}
+
+.score {
+  position: absolute;
+  right: 10px;
+  color: var(--neon-cyan);
+}
+
+.speed {
+  position: absolute;
+  left: 10px;
+  color: var(--neon-yellow);
+}
+
+.high-score {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--neon-yellow);
+}

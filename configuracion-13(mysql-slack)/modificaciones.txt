@@ -1,0 +1,136 @@
+================================================================================
+MODIFICACIONES: configuracion-13(mysql-slack)
+Comparación con: configuracion-12
+================================================================================
+
+Origen: uno/dino-runner8/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (con reglas de MySQL, Slack, entorno local con escritorio)
+.opencode/skills/: 9+ skills activas (incluye json-safe-edit, mysql, notifications, post-implementation)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+.opencode/scripts/: scripts (db-query.sh)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (principal) + opencode.json.backup + opencode.json.fixed (3 configs)
+
+CAMBIO DE PARADIGMA:
+  config-12: 100% local, orquestador con qwen3:32b, post-implementation
+             verificada por explorer.
+  config-13: 100% local, orquestador VUELVE a opencode/big-pickle,
+             INTEGRACIÓN MySQL, NOTIFICACIONES SLACK, PLUGINS,
+             PARTIAL-EDIT-PROTOCOL, nuevas skills (mysql, notifications,
+             json-safe-edit, post-implementation, agent-scope-limits).
+             Entorno local con escritorio (headed Playwright).
+             Permisos más granulares (read, glob, grep, todowrite, question).
+
+PROBLEMAS REFERIDOS:
+  1. Necesidad de integrar consultas MySQL desde el flujo de agentes.
+     Se agrega skill 'mysql' y script ./.opencode/scripts/db-query.sh.
+  2. Falta de notificaciones a Slack para eventos del sistema
+     (completado, error, consulta al usuario). Se agrega skill
+     'notifications' + plugin @sillybit/opencode-plugin-everynotify.
+  3. Edición de archivos JSON insegura: code-writer podía dañar la
+     sintaxis JSON. Se agrega skill 'json-safe-edit' con validación
+     node -e post-edición.
+  4. Falta de protocolo para edición parcial: cambios grandes en
+     archivos existentes sin contexto completo. Se agrega
+     'partial-edit-protocol' y 'agent-scope-limits'.
+  5. No se documentaba el entorno de ejecución (local con escritorio).
+     Se agrega sección en AGENTS.md para headed Playwright y
+     visualización nativa.
+  6. El orquestador no tenía suficientes permisos de lectura
+     (read, glob, grep, todowrite, question). Se agregan.
+  7. opencode.json.backup y opencode.json.fixed son versiones
+     alternativas de la configuración (backup pre-fix y versión
+     corregida con plugins).
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: ollama/qwen3:32b → opencode/big-pickle (VUELVE a big-pickle)
+   - Prompt: SE AGREGAN skills 'post-implementation', 'notifications',
+     'partial-edit-protocol'. Se agrega MySQL → delegar a @explorer.
+     Se agrega NOTIFICACIONES SLACK con slack_send_slack_message.
+     Se agrega "Para cambios parciales: carga partial-edit-protocol".
+   - Permisos: SE AGREGAN read:allow, glob:allow, grep:allow,
+     todowrite:allow, question:allow, skill:{"*":"allow"}
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (igual)
+   - Prompt: simplificado "Carga 'task-decomposition' y consulta AGENTS.md"
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+
+3. explorer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGA MySQL (cargar skill 'mysql', usar
+     ./.opencode/scripts/db-query.sh). SE AGREGA node -e programático
+     para extraer info de JSON.
+   - Permisos bash: SE AGREGAN node *, head *, wc *, cat *, ls *, echo *
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+
+4. researcher
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: COMPLETAMENTE RENOVADO. prompt detallado con estructura
+     de entrega (endpoints URL, modelos TypeScript, servicio con
+     HttpClient + signals). Consulta package.json para versiones.
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question, websearch
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGA "Si la tarea es de CORRECCIÓN, carga
+     'agent-scope-limits' y sigue mínimo cambio". SE AGREGA
+     "REGLA JSON: carga 'json-safe-edit' antes de modificar .json"
+     + "VALIDACIÓN JSON: node -e 'JSON.parse(...)' post-edición"
+   - Se agregan permisos read, glob, grep, todowrite, question
+
+6. qa-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: MODO SOLO-REPORTE (igual que config-11/12)
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+
+7. package-manager
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: mismo
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+   - npm install* → "ask" (cambio de allow a ask)
+
+8. e2e-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+
+9. unit-tester
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Permisos: SE AGREGAN read, glob, grep, todowrite, question
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos que config-12. Mismas opciones.
+  2. NUEVO: "plugin": ["opencode-link", "@sillybit/opencode-plugin-everynotify"]
+     (en opencode.json principal). opencode.json.backup y .fixed usan "plugins".
+
+SKILLS:
+  NUEVAS (vs config-12):
+  - json-safe-edit: protocolo de edición segura de JSON con validación
+  - mysql: ejecuta consultas MySQL del proyecto
+  - notifications: protocolo de notificaciones Slack
+  - post-implementation: verificación post-implementación (antes era
+    parte del prompt del orquestador)
+  - partial-edit-protocol: para edición parcial de archivos
+  - agent-scope-limits: para correcciones con mínimo cambio
+  CONSERVADAS: mismas de config-12 + olds/
+
+AGENTS.md: PRESENTE. IMPORTANTEMENTE ACTUALIZADO:
+  - Nueva sección "⚠️ Entorno de Ejecución — Máquina Local con Escritorio"
+  - Regla de base de datos MySQL
+  - Regla de notificaciones Slack
+  - Tabla de skills ampliada con 13 skills
+  - json-safe-edit, mysql, notifications, orchestrator-protocol,
+    post-implementation, task-decomposition
+
+CONFIGS ALTERNATIVAS:
+  - opencode.json.backup: versión previa similar al .fixed pero
+    sin "read", "glob" en permissions del build, y con menos
+    herramientas en explorer. Prompt del build sin partial-edit-protocol.
+  - opencode.json.fixed: versión corregida, casi idéntica a opencode.json
+    pero usa "plugins" (array) en lugar de "plugin" (string), y sin
+    partial-edit-protocol en el prompt del build.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

@@ -1,0 +1,31 @@
+.title {
+  font-family: 'Press Start 2P';
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.play-button {
+  background: var(--neon-green);
+  border: 2px solid var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+  transition: box-shadow 0.3s ease;
+}
+
+.high-score {
+  color: var(--neon-yellow);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container {
+  animation: fadeInUp 1s ease-out;
+}

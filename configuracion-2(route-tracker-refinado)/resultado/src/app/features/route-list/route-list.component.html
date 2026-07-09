@@ -1,0 +1,126 @@
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<aside class="sidebar">
+  <header class="sidebar__header">
+    <h1 class="sidebar__title">RouteTracker</h1>
+    <p class="sidebar__subtitle">Haz clic en el mapa para añadir puntos</p>
+  </header>
+
+  <section class="sidebar__section">
+    <div class="gps-status" [class.gps-status--active]="geoService.currentPosition() !== null">
+      <span class="gps-status__dot"></span>
+      <span class="gps-status__label">
+        @if (geoService.permissionStatus() === 'unsupported') {
+          GPS no disponible
+        } @else if (geoService.currentPosition() !== null) {
+          GPS activo
+        } @else if (geoService.permissionStatus() === 'denied') {
+          GPS denegado
+        } @else {
+          GPS inactivo
+        }
+      </span>
+      @if (
+        geoService.permissionStatus() !== 'unsupported' &&
+        geoService.permissionStatus() !== 'denied'
+      ) {
+        <p-button
+          [label]="geoService.currentPosition() !== null ? 'Detener' : 'Activar'"
+          [severity]="geoService.currentPosition() !== null ? 'danger' : 'secondary'"
+          [variant]="'outlined'"
+          size="small"
+          (onClick)="toggleGps()"
+        />
+      }
+    </div>
+  </section>
+
+  <section class="sidebar__section">
+    <h2 class="sidebar__section-title">Ruta activa</h2>
+
+    <div class="active-route-stats">
+      <div class="stat">
+        <span class="stat__value">{{ routeService.activePoints().length }}</span>
+        <span class="stat__label">puntos</span>
+      </div>
+      <div class="stat">
+        <span class="stat__value">{{ routeService.activeDistanceMeters() | distance }}</span>
+        <span class="stat__label">distancia</span>
+      </div>
+    </div>
+
+    @if (routeService.hasActiveRoute()) {
+      <div class="save-form">
+        <p-inputText
+          placeholder="Nombre de la ruta..."
+          [formControl]="routeForm.controls.name"
+          (keyup.enter)="saveRoute()"
+          styleClass="w-full"
+        />
+        <div class="save-form__actions">
+          <p-button
+            label="Guardar"
+            severity="info"
+            (onClick)="saveRoute()"
+            [loading]="routeService.isSaving()"
+            [disabled]="routeService.isSaving()"
+          />
+          <p-button
+            label="Deshacer"
+            severity="secondary"
+            [variant]="'outlined'"
+            (onClick)="undoLastPoint()"
+          />
+          <p-button
+            label="Limpiar"
+            severity="danger"
+            [variant]="'outlined'"
+            (onClick)="clearRoute()"
+          />
+        </div>
+      </div>
+    } @else {
+      <p class="sidebar__hint">Haz clic en el mapa para empezar</p>
+    }
+  </section>
+
+  <section class="sidebar__section sidebar__section--routes">
+    <h2 class="sidebar__section-title">
+      Rutas guardadas
+      <p-badge [value]="routeService.savedRoutes().length.toString()" severity="info" />
+    </h2>
+
+    @if (routeService.savedRoutes().length === 0) {
+      <p class="sidebar__hint">Aún no has guardado ninguna ruta</p>
+    } @else {
+      <ul class="route-list">
+        @for (route of routeService.savedRoutes(); track route.id) {
+          <li
+            class="route-item"
+            [class.route-item--active]="isDisplayed(route)"
+            (click)="loadRoute(route)"
+            role="button"
+            tabindex="0"
+          >
+            <div class="route-item__info">
+              <span class="route-item__name">{{ route.name }}</span>
+              <span class="route-item__meta">
+                {{ route.points.length }} pts · {{ route.distanceMeters | distance }}
+              </span>
+              <span class="route-item__date">{{ formatDate(route.createdAt) }}</span>
+            </div>
+            <p-button
+              icon="pi pi-times"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              (onClick)="confirmDeleteRoute(route, $event)"
+              [ariaLabel]="'Eliminar ruta ' + route.name"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</aside>

@@ -1,0 +1,60 @@
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #0a0a0f;
+  color: #f0f0f0;
+  font-family: Inter;
+}
+
+.title {
+  font-family: 'Press Start 2P';
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #00f0ff;
+  text-shadow: 0 0 7px #00f0ff, 0 0 10px #00f0ff, 0 0 21px #00f0ff;
+}
+
+.instructions {
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #a0a0b0;
+}
+
+.instructions p {
+  margin: 8px 0;
+}
+
+.high-score {
+  margin-bottom: 40px;
+  font-size: 1rem;
+  color: #ffe600;
+}
+
+.score-value {
+  font-weight: 700;
+  color: #ffe600;
+}
+
+.btn-play {
+  padding: 16px 48px;
+  font-size: 1.2rem;
+  font-family: 'Press Start 2P';
+  background: transparent;
+  border: 2px solid #00f0ff;
+  color: #00f0ff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-play:hover {
+  box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff40, inset 0 0 5px #00f0ff20;
+  background: rgba(0,240,255,0.1);
+}
+
+.btn-play:active {
+  transform: scale(0.95);
+}

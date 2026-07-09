@@ -1,0 +1,27 @@
+.menu-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.score-final {
+  font-size: 3rem;
+  color: var(--neon-yellow);
+  margin: 1rem 0;
+}
+
+.record {
+  color: var(--neon-green);
+  font-size: 1.5rem;
+}
+
+button.neon-border-green {
+  border-color: var(--neon-green);
+}
+
+button.neon-border-cyan {
+  border-color: var(--neon-cyan);
+}

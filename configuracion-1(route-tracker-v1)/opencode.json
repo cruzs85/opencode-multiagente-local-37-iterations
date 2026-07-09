@@ -1,0 +1,222 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["Cualquier tipo de respuesta debe estar en español, así como todos los comentarios en el código, explicaciones, planes y mensajes."],
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "model": "zai-coding-plan/glm-4.7",
+      "prompt": "Eres el agente orquestador de RouteTracker.\n\nREGLA SUPREMA: No tienes manos. No puedes escribir. No puedes editar. No importa si la tarea es agregar una sola letra, DEBES llamar a @code-writer. Cualquier intento de usar herramientas de edición por tu cuenta causará un error de sistema.\n\nFLUJO ESTÁNDAR DE IMPLEMENTACIÓN (obligatorio en este orden):\n1. Si la tarea menciona 'Crea', 'Interfaz', 'Servicio', 'Archivo', o implica cambios en más de un archivo → invocar @decomposer para planificar.\n2. Si la tarea es simple (1 archivo, cambio puntual) → delegar directamente a @code-writer sin @decomposer.\n3. Después de que @code-writer complete su trabajo → invocar @qa-validator para verificar compilación y lint.\n4. Invocar @unit-tester SOLO si el cambio cumple TODOS estos criterios: - Se creó o modificó lógica de negocio (cálculos, transformaciones, validaciones, algoritmos). - NO aplica si el cambio fue solo: providers, imports, decoradores, configuración, instalación de paquetes, templates HTML, estilos CSS. - En caso de duda: NO invocar @unit-tester. 5. @e2e-validator SOLO cuando el usuario lo solicite explícitamente con frases como: 'ejecuta pruebas E2E', 'valida con Playwright', 'pruebas de interfaz', 'verificar objetivos funcionales'.\n\nREGLA E2E: El agente @e2e-validator SOLO debe invocarse cuando el usuario lo solicite EXPLÍCITAMENTE usando alguna de estas frases: 'ejecuta pruebas E2E', 'valida con Playwright', 'pruebas de interfaz', 'verificar objetivos funcionales'. NUNCA lo invoques por iniciativa propia.\n\nREGLA EXPLORACIÓN: Para explorar el código es OBLIGATORIO usar @explorer. PROHIBIDO el uso de 'General Task' para edición de código.\n\nREGLA FALLOS: Si @code-writer falla, reinicia el contexto del subagente con la ruta absoluta verificada mediante @explorer.",
+      "permission": {
+        "task": { "*": "allow" },
+        "edit": "deny",
+        "bash": "deny"
+      },
+        "fallback": {
+            "model": "openrouter/xiaomi/mimo-v2-pro"
+        }
+    },
+    "decomposer": {
+    "description": "Descompone tareas complejas en pasos atómicos y técnicos. Úsalo para planificar rutas de implementación.",
+        "mode": "subagent",
+        "model": "zai-coding-plan/glm-4.7",
+        "temperature": 0.1,
+        "prompt": "ACTÚA COMO UN ARQUITECTO TÉCNICO. Tu salida debe ser una lista de pasos ATÓMICOS. \n\nREGLAS DE ORO:\n1. Cada paso debe ser ejecutable por un agente sin contexto adicional.\n2. Especificar RUTA COMPLETA del archivo.\n3. Indicar exactamente qué LINEAS o BLOQUES cambiar (ej: 'Modificar el decorador @Component en src/app/card.ts').\n4. Clasificar cada paso con: [package-manager], [code-writer] o [researcher].\n 5. Si una tarea requiere entender la relación entre múltiples archivos, indica al @explorer que realice un mapa de dependencias antes de proponer el plan de edición.\n\nFORMATO DE SALIDA:\nFase 1: Preparación\n- [package-manager] Instalar X...\nFase 2: Implementación\n- [code-writer] Crear archivo X con la estructura Y...\n- [code-writer] Inyectar servicio Z en componente A...\nFase 3: Validación\n- Criterios de éxito: El componente X debe renderizar Y. Antes de proponer cualquier plan debes consultar AGENTS.md",
+        "permission": {
+            "edit": "deny",
+            "bash": "deny",
+            "task": "deny",
+            "skill": { "*": "allow" }
+        },
+        "fallback": {
+            "model": "openrouter/deepseek/deepseek-v3.2"
+        }
+    },
+    "explorer": {
+      "description": "Explora y analiza el codebase de RouteTracker sin modificar nada. Úsalo para identificar archivos relevantes, entender flujos de datos y localizar exactamente dónde hacer cambios.",
+      "mode": "subagent",
+      "model": "openrouter/xiaomi/mimo-v2-flash",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "skill": { "*": "allow" }
+      }
+    },
+    "researcher": {
+      "description": "Investiga APIs externas y propone interfaces de servicios Angular. Úsalo cuando necesites integrar una API nueva como OSRM. Carga la skill osrm-integration antes de responder.",
+      "mode": "subagent",
+      "model": "ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "skill": { "*": "allow" }
+      },
+      "fallback": {
+        "model": "openrouter/xiaomi/mimo-v2-flash"
+      }
+    },
+    "code-writer": {
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "temperature": 0,
+        "prompt": "SISTEMA: Eres un ejecutor de archivos. Recibirás instrucciones del @decomposer. USA EXCLUSIVAMENTE la herramienta 'edit'. Si el plan es ambiguo, solicita aclaración antes de escribir.",
+        "permission": {
+            "edit": "allow",
+            "bash": "allow"
+        },
+        "fallback": {
+            "model": "opencode/big-pickle"
+        }
+    },
+    "qa-validator": {
+        "description": "Valida cambios ejecutando build y tests.",
+        "mode": "subagent",
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "temperature": 0.1,
+        "prompt": "ACTÚA COMO INGENIERO DE QA.\n\nPASOS DE VALIDACIÓN:\n1. Carga SIEMPRE las skills 'qa-protocol' y 'angular-architecture'.\n2. OBLIGATORIO: Ejecuta SIEMPRE 'npm run build' antes de cualquier conclusión.\n3. Está PROHIBIDO validar leyendo archivos manualmente sin ejecutar el build.\n4. Si no ejecutas comandos bash, la tarea se considera FALLIDA.\n5. Si hay errores, clasifícalos (Sintaxis, Arquitectura o Lógica).\n6. Delega la corrección a @code-writer detallando el error.\n\nREGLAS DE ESCALADO:\n- Máximo 3 iteraciones totales.\n- Si el error persiste tras la SEGUNDA iteración, solicita al @decomposer un 'Root Cause Analysis' enviando el log completo.\n- Verifica que Leaflet se use SOLO en afterNextRender() y que se use inject().\n\nNUNCA edites archivos directamente.\nCRITERIO DE ÉXITO: Debe existir al menos 1 ejecución de comando bash. Si no hay toolcalls de bash → validación inválida.",
+        "permission": {
+            "edit": "deny",
+            "bash": {
+            "*": "deny",
+            "npm run build*": "allow",
+            "npm test*": "allow",
+            "npm run lint*": "allow"
+            },
+            "skill": { "*": "allow" },
+            "task": {
+            "code-writer": "allow",
+            "researcher": "allow",
+            "decomposer": "allow"
+            }
+        },
+        "fallback": {
+            "model": "ollama/qwen3:30b-a3b"
+        }
+    },
+    "package-manager": {
+      "description": "Instala y configura librerías y paquetes Angular.",
+      "prompt": "Siempre carga las skills angular-architecture y angular-packages antes de actuar. Siempre consulta documentación actualizada antes de instalar. Responde preguntas interactivas de ng add, configura angular.json y app.config.ts en caso de ser necesario.", 
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-4.5-air",
+      "temperature": 0.1,
+      "permission": {
+            "edit": "allow",
+            "bash": {
+                "*": "deny",
+                "npm install*": "allow",
+                "npm ci*": "allow",
+                "ng add*": "allow",
+                "ng generate*": "allow"
+            },
+            "webfetch": "allow",
+            "skill": { "*": "allow" }
+        },
+      "fallback": {
+        "model": "zai-coding-plan/glm-4.7"
+      }
+    },
+    "e2e-validator": {
+        "description": "Valida que la implementación cumple los objetivos funcionales ejecutando pruebas E2E con Playwright. Úsalo DESPUÉS de que qa-validator confirme build exitoso.",
+        "mode": "subagent",
+        "model": "openrouter/qwen/qwen3-coder-next",
+        "temperature": 0.1,
+        "prompt": "ACTÚA COMO INGENIERO DE QA FUNCIONAL.\n\nPASOS:\n1. Carga la skill 'e2e-protocol'.\n2. Ejecuta 'npx playwright test --reporter=list'.\n3. Si una prueba falla, analiza el screenshot en test-results/ y el mensaje de error.\n4. Clasifica el fallo: [lógica-de-negocio], [ui-renderizado] o [datos-incorrectos].\n5. Delega la corrección a @code-writer con el contexto exacto del fallo.\n6. Máximo 2 iteraciones. Si el fallo persiste, escala a @decomposer con el log completo.\n\nNUNCA edites archivos directamente.",
+        "permission": {
+            "edit": "deny",
+            "bash": {
+            "*": "deny",
+            "npx playwright test*": "allow",
+            "npx playwright show-report*": "allow"
+            },
+            "skill": { "*": "allow" },
+            "task": {
+                "code-writer": "allow",
+                "decomposer": "allow"
+            }
+        },
+        "fallback": {
+            "model": "ollama/qwen3:30b-a3b"
+        }
+    },
+    "unit-tester": {
+        "description": "Escribe y ejecuta pruebas unitarias para el código generado. Úsalo después de code-writer para verificar lógica de servicios y componentes.",
+        "mode": "subagent",
+        "model": "openrouter/deepseek/deepseek-v3.2",
+        "temperature": 0,
+        "prompt": "ACTÚA COMO INGENIERO DE TESTING.\n\nPASOS:\n1. Analiza el archivo implementado por @code-writer.\n2. Escribe pruebas unitarias con Jest/Jasmine cubriendo: caso feliz, casos borde y casos de error.\n3. Ejecuta 'npm test -- --testPathPattern=nombre.spec.ts'.\n4. Si fallan, determina si el fallo es en la PRUEBA o en la IMPLEMENTACIÓN.\n5. Si es en la implementación, delega a @code-writer con el caso específico que falla.\n\nUSA la herramienta 'edit' solo para archivos *.spec.ts",
+        "permission": {
+            "edit": "allow",
+            "bash": {
+                "*": "deny",
+                "npm test*": "allow",
+                "npx jest*": "allow"
+            },
+            "skill": { "*": "allow" },
+            "task": {
+                "code-writer": "allow"
+            }
+        },
+        "fallback": {
+            "model": "openrouter/qwen/qwen3-coder-next"
+        }
+    }
+  },
+  "provider": {
+    "copilot": {
+      "npm": "@ai-sdk/github-copilot",
+      "name": "GitHub Copilot"
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder:14b": {
+          "name": "Qwen 2.5 Coder 14B (local)"
+        },
+        "qwen3:30b-a3b": {
+          "name": "Qwen3 30B A3B (local)"
+        },
+        "qwen-32k:latest": {
+          "name": "Qwen 32K Custom (local)"
+        },
+        "llama3.1:8b": {
+          "name": "Llama 3.1 8B (local)"
+        },
+        "gemma3:4b": {
+          "name": "Gemma 3 4B (local)"
+        },
+        "deepseek-coder-v2:16b-lite-instruct-q4_K_M": {
+          "name": "deepseek coder v2:16b lite (local)"
+        }
+      }
+    },
+  "provider": {
+    "zai-coding-plan": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Z.AI Coding Plan[cite: 1]",
+      "options": {
+        "baseURL": "https://api.z.ai/v1"
+      }
+    },
+    "openrouter": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenRouter",
+      "options": {
+        "baseURL": "https://openrouter.ai/api/v1",
+        "apiKey": "sk-or-v1-XXXXXXXXXXXXX"
+      },
+      "models": {
+        "minimax/m2.5-lightning": { "name": "M2.5 Lightning" },
+        "deepseek/deepseek-v3.2": { "name": "DeepSeek V3.2" }, 
+        "xiaomi/mimo-v2-pro": { "name": "mimo V2 Pro" }, 
+        "xiaomi/mimo-v2-flash": { "name": "mimo V2 Flash" }, 
+        "qwen/qwen3-coder-next": { "name": "Qwen3 Coder Next" } 
+      }
+    }
+  }
+}

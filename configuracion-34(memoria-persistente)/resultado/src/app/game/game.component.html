@@ -1,0 +1,18 @@
+<div class="game-container" 
+     [attr.data-game-state]="gameState()"
+     [attr.data-jump-count]="jumpCount()"
+     [attr.data-obstacle-count]="obstacleCount()"
+     [attr.data-dino-y]="dinoY()">
+  <canvas #gameCanvas class="game-canvas"></canvas>
+  
+  <!-- HUD Overlay -->
+  <div class="hud-overlay">
+    <div class="score-container">
+      <div class="score-label">Score</div>
+      <div class="score-value">{{ gameServicePublic.score() }}</div>
+    </div>
+    <div class="high-score-container">
+      <div class="score-label">High Score</div>
+      <div class="score-value">{{ highScoreServicePublic.highScore() }}</div>
+    </div>
+  </div>

@@ -1,0 +1,91 @@
+================================================================================
+MODIFICACIONES: configuracion-8
+Comparación con: configuracion-7
+================================================================================
+
+Origen: uno/dino-runner3/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (similar a config-7)
+.opencode/skills/: 8 skills activas (mismas)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+
+CAMBIO DE PARADIGMA:
+  config-7: devstral-small-2 como modelo principal con fallback qwen3:32b.
+  config-8: qwen3-coder:30b como modelo principal (más potente),
+            qwen3:8b como explorador, qwen3:32b como fallback.
+            Skills con ruta RELATIVA (./.opencode/skills).
+
+PROBLEMAS REFERIDOS:
+  1. devstral-small-2:latest en config-7 era insuficiente para tareas
+     de code-writing y QA. Se migra a qwen3-coder:30b (más capaz).
+  2. Las skills apuntaban a ruta ABSOLUTA de Prueba1 en config-5/6/7.
+     En config-8 se corrige a ruta relativa del propio proyecto,
+     haciendo la configuración PORTÁTIL.
+  3. code-writer en config-7 no diferenciaba entre archivos completos
+     (bash+heredoc) y cambios parciales (edit). Se explicita en config-8.
+  4. package-manager no tenía permisos para mkdir, cp, mv, rm, cat
+     en config-7 (se agregan en config-8).
+  5. e2e-validator no tenía permisos para kill-port, cd, ls, mkdir
+     en config-7 (se agregan en config-8).
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: idéntico a config-7 (mismas reglas de no diseñar bloques)
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (igual)
+   - Prompt: idéntico a config-7 (task-decomposition + restricción)
+
+3. explorer
+   - Modelo: ollama/qwen3:8b-q4_K_M (igual)
+   - Fallback: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Prompt: idéntico
+
+4. researcher
+   - Modelo: ollama/qwen3:8b-q4_K_M (igual)
+   - Fallback: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+
+5. code-writer
+   - Modelo: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: SE AGREGA "Para sobreescribir un archivo completo SIEMPRE
+     usa bash con: cat > ruta << 'ENDOFFILE' ... ENDOFFILE" y
+     "Usa la herramienta edit SOLO para cambios parciales"
+
+6. qa-validator
+   - Modelo: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: MISMAS skills (qa-protocol, angular-architecture, anti-loop)
+
+7. package-manager
+   - Modelo: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: SE AGREGAN permisos "ls *", "find *"
+   - SE AGREGAN: mkdir *, cp *, mv *, rm *, cat * (nuevos)
+
+8. e2e-validator
+   - Modelo: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: SE AGREGAN "npx kill-port 4200", "cd *", "ls *", "mkdir *"
+
+9. unit-tester
+   - Modelo: ollama/devstral-small-2:latest → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:32b (igual)
+   - Prompt: idéntico
+
+PROVEEDORES:
+  1. ollama: CAMBIO de modelos. Se agrega qwen3-coder:30b como modelo
+     principal. Se elimina devstral-small-2:latest.
+     Modelos: qwen3-coder:30b, qwen3:8b-q4_K_M, qwen3:32b.
+  2. skills.paths: CAMBIO de ruta absoluta a RELATIVA (./.opencode/skills).
+     Esto hace portátil la configuración.
+
+SKILLS:
+  MISMA LISTA que config-7. SIN cambios en skills individuales.
+
+AGENTS.md: PRESENTE. Misma estructura que config-5/6/7 pero actualizado
+  con qwen3-coder:30b como modelo principal en lugar de devstral-small-2.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

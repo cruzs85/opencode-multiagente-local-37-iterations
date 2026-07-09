@@ -1,0 +1,17 @@
+<div class="game-container">
+  <canvas #gameCanvas width="800" height="400"></canvas>
+  
+  <div class="hud">
+    <div class="score">SCORE: {{ scoreService.score() }}</div>
+    <div class="high-score">HI: {{ scoreService.highScore() }}</div>
+  </div>
+  
+  @if (gameService.gameOver()) {
+    <div class="overlay">
+      <div class="game-over">GAME OVER</div>
+      <div class="final-score">Puntuación: {{ scoreService.score() }}</div>
+      <button class="retry-button" (click)="restartGame()">REINTENTAR</button>
+      <button class="menu-button" (click)="goToMenu()">MENÚ</button>
+    </div>
+  }
+</div>

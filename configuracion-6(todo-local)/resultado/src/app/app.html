@@ -1,0 +1,60 @@
+<div class="game-wrapper">
+  <!-- Header con puntuación -->
+  <header class="score-header">
+    <div class="score-board">
+      <span class="score-label">PUNTOS</span>
+      <span class="score-value">{{ score() }}</span>
+    </div>
+    <div class="score-board">
+      <span class="score-label">RÉCORD</span>
+      <span class="score-value record">{{ highScore() }}</span>
+    </div>
+  </header>
+
+  <!-- Área de juego -->
+  <div class="game-container">
+    <!-- Dinosaurio -->
+    <div
+      class="dino"
+      [style.width.px]="dinoWidth()"
+      [style.height.px]="dinoHeight()"
+      [style.bottom.px]="dinoY() + 4"
+      [style.left]="'5%'"
+    ></div>
+
+    <!-- Obstáculos -->
+    @for (obstacle of obstacles(); track obstacle.id) {
+      <div
+        class="obstacle"
+        [style.left.px]="obstacle.left"
+        [style.width.px]="obstacle.width"
+        [style.height.px]="obstacle.height"
+      ></div>
+    }
+
+    <!-- Suelo -->
+    <div class="ground"></div>
+
+    <!-- Debug overlay -->
+    <div class="debug-info">{{ debugInfo() }}</div>
+
+    <!-- Mensaje de inicio -->
+    @if (!isPlaying() && !isGameOver()) {
+      <div class="overlay-message start-message">
+        <div class="dino-icon">&#129430;</div>
+        <p>Presiona <kbd>ESPACIO</kbd> o <kbd>FLECHA ARRIBA</kbd> para saltar</p>
+        <p class="sub-text">¡Doble salto disponible!</p>
+      </div>
+    }
+
+    <!-- Pantalla de Game Over -->
+    @if (isGameOver()) {
+      <div class="overlay-message game-over-message">
+        <h2>GAME OVER</h2>
+        <p class="final-score">Puntuación: <strong>{{ score() }}</strong></p>
+        <p class="final-record">Récord: <strong>{{ highScore() }}</strong></p>
+        <button class="restart-btn" (click)="restart()">REINICIAR</button>
+      </div>
+    }
+  </div>
+</div>

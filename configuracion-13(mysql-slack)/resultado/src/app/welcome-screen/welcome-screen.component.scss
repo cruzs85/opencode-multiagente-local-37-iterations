@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #1a1a2e;
+}
+
+.welcome-container {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.title {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+.instructions {
+  color: #a0a0a0;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.high-score {
+  color: #ffd700;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.start-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.start-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+}

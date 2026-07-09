@@ -1,0 +1,114 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.welcome-screen {
+  text-align: center;
+  color: white;
+
+  &__content {
+    max-width: 500px;
+    padding: 2rem;
+  }
+
+  &__title {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Courier New', monospace;
+  }
+
+  &__dino-icon {
+    margin: 2rem auto;
+  }
+
+  .dino-icon {
+    width: 60px;
+    height: 70px;
+    background: #535353;
+    margin: 0 auto;
+    border-radius: 4px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      right: 8px;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 8px;
+      width: 12px;
+      height: 8px;
+      background: #535353;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 20px 0 0 0 #535353;
+    }
+  }
+
+  &__instructions {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  &__rules {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+
+    li {
+      padding: 0.5rem 0;
+      font-size: 1.1rem;
+      line-height: 1.5;
+
+      &::before {
+        content: '🦖 ';
+      }
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &__button {
+    background: white;
+    color: #764ba2;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Courier New', monospace;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

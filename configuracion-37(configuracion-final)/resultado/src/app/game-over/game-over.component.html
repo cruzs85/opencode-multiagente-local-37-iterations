@@ -1,0 +1,26 @@
+<div class="game-over-modal" data-testid="game-over-modal">
+  <div class="game-over-content">
+    <h1 class="game-over-title neon-glow-red">GAME OVER</h1>
+    
+    <div class="scores-section">
+      <p class="score">Puntuación: {{ gameService.score() }}</p>
+      <p class="high-score">Récord: {{ gameService.highScore() }}</p>
+    </div>
+    
+    <div class="buttons-section">
+      <button 
+        class="retry-button neon-border-cyan" 
+        [routerLink]="['/game']"
+        data-testid="retry-button">
+        REINTENTAR
+      </button>
+      
+      <button 
+        class="main-menu-button" 
+        [routerLink]="['/']"
+        data-testid="main-menu-button">
+        MENÚ PRINCIPAL
+      </button>
+    </div>
+  </div>
+</div>

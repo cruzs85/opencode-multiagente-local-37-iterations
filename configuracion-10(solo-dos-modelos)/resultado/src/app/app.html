@@ -1,0 +1,5 @@
+@if (gameState() === 'welcome') {
+  <app-welcome-screen (startGame)="onStartGame()" />
+} @else {
+  <app-game-board />
+}

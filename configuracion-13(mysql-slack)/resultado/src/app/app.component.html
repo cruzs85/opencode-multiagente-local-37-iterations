@@ -1,0 +1,11 @@
+@switch (state()) {
+  @case ('welcome') {
+    <app-welcome-screen />
+  }
+  @case ('playing') {
+    <app-game-canvas />
+  }
+  @case ('gameover') {
+    <app-game-over-screen />
+  }
+}

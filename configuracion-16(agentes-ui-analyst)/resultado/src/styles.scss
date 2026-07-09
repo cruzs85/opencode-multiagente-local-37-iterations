@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+:root {
+  // Colores de fondo
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #14141f;
+  --bg-tertiary: #1a1a2e;
+  --bg-game: #07070b;
+
+  // Colores de texto
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+
+  // Colores Neon (acento)
+  --neon-cyan: #00f0ff;
+  --neon-magenta: #ff00aa;
+  --neon-green: #39ff14;
+  --neon-red: #ff1744;
+  --neon-yellow: #ffe600;
+  --neon-purple: #bb00ff;
+
+  // Superficies interactivas
+  --surface-button: #1e1e32;
+  --surface-button-hover: #2a2a45;
+  --surface-card: #14141f;
+  --surface-overlay: #0d0d16e0;
+
+  // Espaciado
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+}

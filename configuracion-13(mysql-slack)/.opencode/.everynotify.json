@@ -1,0 +1,13 @@
+{
+  "slack": {
+    "enabled": true,
+    "webhookUrl": "PLACEHOLDER-REDACTED-SLACK-WEBHOOK"
+  },
+  "events": {
+    "complete": true,
+    "subagent_complete": true,
+    "error": true,
+    "permission": true,
+    "question": true
+  }
+}

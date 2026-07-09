@@ -1,0 +1,103 @@
+================================================================================
+MODIFICACIONES: configuracion-6(todo-local)
+Comparación con: configuracion-5(proveedores-hibridos)
+================================================================================
+
+Origen: uno/dino-runner/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (similar a config-4, simplificado)
+.opencode/skills/: 8 skills activas (sin olds/, sin orchestrator-protocol)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+
+CAMBIO DE PARADIGMA:
+  configuracion-5: Híbrido (OpenRouter + Ollama + zai-coding-plan),
+                   3 proveedores, 6+ modelos.
+  configuracion-6: 100% local (Ollama), 1 proveedor, 3 modelos
+                   (devstral-small-2, qwen3:8b-q4_K_M, qwen3:32b).
+                   VUELVE al paradigma local de config-4 pero con
+                   devstral-small-2 como modelo principal.
+
+PROBLEMAS REFERIDOS:
+  1. Los costos de OpenRouter en config-5 eran elevados (DeepSeek V3.2,
+     mimo-v2-pro). Se migra todo a local.
+  2. La API key de OpenRouter estaba expuesta en config-5. Se elimina.
+  3. Los modelos grandes (qwen3-coder:30b) no estaban disponibles
+     localmente, se usa devstral-small-2 como alternativa ligera.
+  4. code-writer en config-5 usaba solo 'edit' para todo, causando
+     truncamientos. Se restaura bash+heredoc para archivos completos.
+  5. No había fallback definido para explorer en config-5. Se agrega.
+  6. Las skills apuntaban a ruta absoluta en config-5. Se cambia a
+     ruta relativa (aunque aún apunta a Prueba1).
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: simplificado, sin reglas E2E/exploración detalladas de
+     config-5. Incluye inferencia de requerimientos coloquiales.
+   - Fallback: opencode/big-pickle (igual)
+
+2. decomposer
+   - Modelo: opencode/big-pickle (antes opencode/big-pickle en config-5)
+   - Fallback: opencode/big-pickle (antes openrouter/deepseek/deepseek-v3.2)
+   - Prompt: simplificado, sin restricción absoluta de no escribir código
+     (era más detallado en config-5 con task-decomposition)
+
+3. explorer
+   - Modelo: openrouter/xiaomi/mimo-v2-flash → ollama/qwen3:8b-q4_K_M
+   - Fallback: (no tenía) → ollama/devstral-small-2:latest
+   - Prompt: mismo que config-5 (con límites anti-loop)
+
+4. researcher
+   - Modelo: ollama/deepseek-coder-v2:16b → ollama/qwen3:8b-q4_K_M
+   - Fallback: openrouter/xiaomi/mimo-v2-flash → ollama/devstral-small-2:latest
+
+5. code-writer
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/devstral-small-2:latest
+   - Fallback: opencode/big-pickle → ollama/qwen3:32b
+   - Prompt: CAMBIO RADICAL — usa bash con heredoc para archivos completos
+     + edit para cambios parciales. Formato <tool_call> obligatorio.
+   - SIN skill contract-verification
+
+6. qa-validator
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/devstral-small-2:latest
+   - Fallback: ollama/qwen3:30b-a3b → ollama/qwen3:32b
+   - Prompt: se agrega paso 2b para errores 'Property does not exist'
+   - Skills requeridas: qa-protocol + angular-architecture + anti-loop-protocol
+
+7. package-manager
+   - Modelo: zai-coding-plan/glm-4.5-air → ollama/devstral-small-2:latest
+   - Fallback: zai-coding-plan/glm-4.7 → ollama/qwen3:32b
+   - Permisos bash ampliados: npm install, npm ci, npx, ng, ls, find, mkdir,
+     cp, mv, rm, cat (más permisivo que config-5)
+
+8. e2e-validator
+   - Modelo: openrouter/qwen/qwen3-coder-next → ollama/devstral-small-2:latest
+   - Fallback: ollama/qwen3:30b-a3b → ollama/qwen3:32b
+
+9. unit-tester
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/devstral-small-2:latest
+   - Fallback: openrouter/qwen/qwen3-coder-next → ollama/qwen3:32b
+
+PROVEEDORES:
+
+1. ollama: ÚNICO proveedor. Modelos:
+   - devstral-small-2:latest (tools, reasoning, num_ctx:65536)
+   - qwen3:8b-q4_K_M (tools, reasoning, num_ctx:65536)
+   - qwen3:32b (tools, reasoning, num_ctx:65536)
+2. openrouter: ELIMINADO
+3. zai-coding-plan: ELIMINADO
+4. "skills.paths": Ruta ABSOLUTA a Prueba1/.opencode/skills (heredado de config-5)
+
+SKILLS:
+  MISMA LISTA que config-5: angular-architecture, angular-packages,
+    angular-patterns, anti-loop-protocol, e2e-protocol, explorer-protocol,
+    qa-protocol, task-decomposition.
+  SIN olds/ (config-5 sí tenía).
+  SIN orchestrator-protocol, contract-verification, angular-scaffolding.
+
+AGENTS.md: PRESENTE. Similar a config-4 pero con devstral-small-2 como
+  modelo principal. Menos extenso que config-5 (sin patrones de código,
+  sin criterios de validación detallados).
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

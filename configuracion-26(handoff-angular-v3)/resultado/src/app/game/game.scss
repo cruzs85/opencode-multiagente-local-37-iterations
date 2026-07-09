@@ -1,0 +1,75 @@
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-game);
+  overflow: hidden;
+}
+
+.game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hud {
+  position: absolute;
+  top: var(--space-md);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.score-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+}
+
+.score-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.2rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 5px var(--neon-green);
+}
+
+.high-score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.high-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.high-value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1rem;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.instructions {
+  position: absolute;
+  bottom: var(--space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  pointer-events: none;
+  z-index: 10;
+}

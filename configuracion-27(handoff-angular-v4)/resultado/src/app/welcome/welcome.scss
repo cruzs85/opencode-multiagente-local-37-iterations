@@ -1,0 +1,30 @@
+.menu-center {
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  font-family: 'Press Start 2P';
+  font-size: 2.5rem;
+}
+
+button {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  animation: neon-flicker 1.5s infinite;
+}
+
+@keyframes scanlines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+body {
+  background: repeating-linear-gradient(to bottom, transparent, transparent 1px, var(--bg-secondary) 1px, var(--bg-secondary) 2px);
+  animation: scanlines 2s linear infinite;
+}

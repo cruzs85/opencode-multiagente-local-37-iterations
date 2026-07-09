@@ -1,0 +1,16 @@
+<div class="game-container" data-testid="game-canvas">
+  <canvas #gameCanvas class="game-canvas" (click)="onJump()" (touchstart)="onJump()" tabindex="0"></canvas>
+  <div class="hud">
+    <div class="score" data-testid="score-display">{{ floorScore() }}</div>
+  </div>
+  @if (isGameOver()) {
+    <div class="game-over-overlay" data-testid="game-over-overlay">
+      <div class="game-over-content">
+        <h2>GAME OVER</h2>
+        <p>Score: {{ floorScore() }}</p>
+        @if (score() >= highScore()) { <p class="new-record">¡Nuevo Récord!</p> }
+        <button class="restart-button" data-testid="restart-button" (click)="onRestart()">REINTENTAR</button>
+      </div>
+    </div>
+  }
+</div>

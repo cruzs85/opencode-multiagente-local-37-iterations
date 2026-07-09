@@ -1,0 +1,68 @@
+.game-over-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #0a0a0f;
+  color: #f0f0f0;
+  font-family: Inter;
+}
+
+.title {
+  font-family: 'Press Start 2P';
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #ff1744;
+  text-shadow: 0 0 7px #ff1744, 0 0 10px #ff1744, 0 0 21px #ff1744;
+}
+
+.score {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #f0f0f0;
+}
+
+.score-value {
+  font-weight: 700;
+  color: #00f0ff;
+}
+
+.high-score {
+  font-size: 1rem;
+  margin-bottom: 24px;
+  color: #ffe600;
+}
+
+.new-record {
+  font-family: 'Press Start 2P';
+  font-size: 1rem;
+  margin-bottom: 40px;
+  color: #ffe600;
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.6; }
+}
+
+.btn-restart {
+  padding: 16px 48px;
+  font-size: 1.2rem;
+  font-family: 'Press Start 2P';
+  background: transparent;
+  border: 2px solid #00f0ff;
+  color: #00f0ff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-restart:hover {
+  box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff40, inset 0 0 5px #00f0ff20;
+  background: rgba(0,240,255,0.1);
+}
+
+.btn-restart:active {
+  transform: scale(0.95);
+}

@@ -1,0 +1,102 @@
+================================================================================
+MODIFICACIONES: configuracion-3(online-especializado)
+Comparación con: configuracion-2(route-tracker-refinado)
+================================================================================
+
+Origen: Configuracion online opencode/V1/opencode.json
+AGENTS.md: NO EXISTE (la fuente V1 no incluye AGENTS.md)
+.opencode/skills/: 9 skills activas + olds/ (carpeta de respaldo)
+resultado/: NO APLICA (la fuente no contiene proyecto Angular)
+
+PROBLEMAS REFERIDOS:
+  1. Los modelos Qwen Turbo y Qwen 2.5 Coder, aunque estables, no tenían la
+     especialización necesaria para tareas específicas: Qwen Turbo como QA
+     no detectaba errores de arquitectura ni lógica, solo errores de sintaxis.
+  2. El code-writer con Qwen 2.5 Coder generaba código que funcionaba pero
+     no seguía las mejores prácticas de Angular (standalone components,
+     signals, afterNextRender).
+  3. Los agentes entraban en bucles infinitos cuando un error se repetía: el
+     code-writer corregía, el qa-validator volvía a probar, y el error
+     persistía sin límite de iteraciones.
+  4. El explorador no tenía un protocolo de búsqueda definido, por lo que
+     cuando no encontraba un archivo, repetía la misma búsqueda con
+     variaciones de regex indefinidamente.
+  5. El e2e-validator con Qwen Turbo fallaba al analizar screenshots de
+     Playwright, requiriendo un modelo más nuevo (qwen3-coder-next).
+  6. La skill osrm-integration era redundante: su contenido ya estaba
+     cubierto en el prompt del researcher.
+  7. La falta de AGENTS.md en configuracion-online hacía que el orquestador
+     no tuviera contexto del proyecto, causando decisiones de delegación
+     incorrectas.
+
+AGENTES:
+
+1. build (Orquestador) - Sin cambios respecto a configuracion-2.
+
+2. decomposer
+   - Modelo: openrouter/qwen/qwen-2.5-coder-32b-instruct →
+             zai-coding-plan/glm-4.7
+   - Fallback: openrouter/qwen/qwen-turbo → openrouter/deepseek/deepseek-v3.2
+   - Prompt: RESTAURADO paso 5 (@explorer con mapa de dependencias)
+
+3. explorer
+   - Modelo: openrouter/qwen/qwen-turbo → openrouter/xiaomi/mimo-v2-flash
+   - Description: restaurada la versión detallada con RouteTracker
+
+4. researcher
+   - Modelo: openrouter/qwen/qwen-turbo →
+             ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M
+   - Description: restaurada referencia a OSRM y skill osrm-integration
+
+5. code-writer
+   - Modelo: openrouter/qwen/qwen-2.5-coder-32b-instruct →
+             openrouter/deepseek/deepseek-v3.2
+   - Fallback: openrouter/qwen/qwen-turbo → opencode/big-pickle
+   - Prompt: restaurado "Recibirás instrucciones del @decomposer"
+
+6. qa-validator
+   - Modelo: openrouter/qwen/qwen-turbo → openrouter/deepseek/deepseek-v3.2
+   - Fallback: openrouter/qwen/qwen-2.5-coder-32b-instruct →
+               ollama/qwen3:30b-a3b
+   - Prompt: restaurados pasos Leaflet, reglas de escalado (3 iteraciones,
+     Root Cause Analysis), criterio de éxito con bash
+
+7. package-manager - Sin cambios.
+
+8. e2e-validator
+   - Modelo: openrouter/qwen/qwen-turbo → openrouter/qwen/qwen3-coder-next
+   - Fallback: openrouter/qwen/qwen-turbo → ollama/qwen3:30b-a3b
+
+9. unit-tester
+   - Modelo: openrouter/qwen/qwen-2.5-coder-32b-instruct →
+             openrouter/deepseek/deepseek-v3.2
+   - Fallback: openrouter/qwen/qwen-turbo → openrouter/qwen/qwen3-coder-next
+
+PROVEEDORES:
+
+1. copilot: RESTAURADO (GitHub Copilot)
+2. openrouter: API key REAL expuesta restaurada; modelos restaurados:
+   minimax/m2.5-lightning, deepseek/deepseek-v3.2, qwen/qwen3-coder-next
+3. zai-coding-plan: NO está presente (a diferencia de configuracion-1 que sí
+   lo tenía). Todos los modelos se consolidaron en openrouter.
+
+SKILLS:
+  AGREGADAS:
+  - anti-loop-protocol/ — Protocolo para prevenir bucles infinitos en agentes
+    recursivos. Responde al problema 3.
+  - explorer-protocol/ — Protocolo de exploración segura con límite de
+    búsquedas. Responde al problema 4.
+  - olds/ — Carpeta con respaldos .md de versiones planas de skills antes de
+    migrar al formato subcarpeta/SKILL.md.
+  ELIMINADAS:
+  - osrm-integration/ — Su contenido se incorporó al prompt del researcher.
+    Responde al problema 6.
+  MODIFICADAS:
+  - e2e-protocol: ahora tiene SKILL.md (en configuracion-2 estaba vacío).
+
+AGENTS.md: AUSENTE en esta configuración. La fuente (Config online V1) no
+           incluía AGENTS.md porque es una configuración pura de opencode
+           sin proyecto Angular asociado. Responde al problema 7.
+
+RESULTADO: No aplica (no hay proyecto Angular asociado).
+================================================================================

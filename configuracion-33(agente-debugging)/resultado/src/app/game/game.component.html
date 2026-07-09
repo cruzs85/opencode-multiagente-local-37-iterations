@@ -1,0 +1,8 @@
+<div class="game-container">
+  <canvas #gameCanvas width="800" height="200" class="game-canvas"></canvas>
+  
+  <div class="hud">
+    <div class="score">Puntuación: {{ gameService.getScore()() }}</div>
+  </div>
+  
+  <div class="instruction">Presiona ESPACIO o clic para saltar</div>

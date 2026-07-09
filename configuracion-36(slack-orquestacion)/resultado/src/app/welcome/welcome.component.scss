@@ -1,0 +1,75 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  padding: 20px;
+}
+
+.welcome-title {
+  font-size: 3rem;
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+  margin-bottom: 2rem;
+}
+
+.instructions {
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  
+  h2 {
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff;
+    margin-bottom: 1rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    
+    li {
+      margin: 0.5rem 0;
+      color: #ccc;
+      
+      strong {
+        color: #0f0;
+      }
+    }
+  }
+}
+
+.high-score {
+  font-size: 1.5rem;
+  color: #ff0;
+  text-shadow: 0 0 5px #ff0;
+  margin-bottom: 2rem;
+}
+
+.neon-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  color: #0f0;
+  background: transparent;
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  
+  &:hover {
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+  }
+}

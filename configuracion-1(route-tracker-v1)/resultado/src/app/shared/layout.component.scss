@@ -1,0 +1,55 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--p-surface-ground);
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--p-text-color);
+  }
+}
+
+:host ::ng-deep {
+  .layout-breadcrumb {
+    margin-right: 12px;
+    
+    .p-breadcrumb-list {
+      background: transparent;
+      border: none;
+    }
+  }
+  
+  .layout-toggle-btn {
+    margin-left: 4px;
+  }
+  
+  .layout-sidebar {
+    width: 320px !important;
+    
+    .p-sidebar-content {
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+}
+
+.layout-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  
+app-map {
+  display: block;
+  height: 100%;
+}
+}

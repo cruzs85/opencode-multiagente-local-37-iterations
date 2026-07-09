@@ -1,0 +1,136 @@
+================================================================================
+MODIFICACIONES: configuracion-4(local-ollama)
+Comparación con: configuracion-3(online-especializado)
+================================================================================
+
+Origen: Configuracion online opencode/V2/opencode.json
+AGENTS.md: NUEVO (no existía en configuracion-3)
+.opencode/skills/: 12 skills activas + olds/
+resultado/: NO APLICA
+
+CAMBIO DE PARADIGMA:
+  configuracion-3: 100% online (OpenRouter + Copilot), modelos diversos
+                   especializados por rol.
+  configuracion-4: 100% local (Ollama), solo 2 modelos (qwen3-coder:30b y
+                   qwen3:32b), skills con ruta explícita en opencode.json.
+
+PROBLEMAS REFERIDOS:
+  1. Los costos de API de OpenRouter y Copilot eran elevados para el uso
+     continuo de modelos como DeepSeek V3.2 y GLM-4.7.
+  2. La latencia de red afectaba el tiempo de respuesta de los agentes, en
+     especial qa-validator y code-writer que requerían múltiples iteraciones.
+  3. Las skills no se cargaban porque la ruta no estaba configurada en
+     opencode.json: el error "Skill 'X' not found. Available skills: none"
+     era constante (documentado en SKILLS-DIAGNOSTIC.md).
+  4. El orquestador daba instrucciones contradictorias a los subagentes
+     porque no conocía sus prompts internos ni sus herramientas permitidas.
+  5. code-writer usaba 'edit' para todo, incluso para sobrescribir archivos
+     completos, causando errores de contenido parcial.
+  6. code-writer no verificaba que las firmas de tipos coincidieran entre
+     archivos dependientes, causando errores de compilación por 'Property
+     does not exist'.
+  7. package-manager no tenía permisos suficientes para operaciones de
+     scaffolding (crear directorios, copiar archivos).
+  8. Explorador y e2e-validator se quedaban ciclados en bucles de búsqueda o
+     validación sin límite.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: zai-coding-plan/glm-4.7 → opencode/big-pickle
+   - Prompt completamente reescrito:
+     * "Carga siempre la Skill 'orchestrator-protocol'"
+     * Regla anti-contradicción: leer prompt del subagente antes de instruir
+     * Delegación por lote (múltiples tool calls en paralelo)
+     * NO usar 'read' para verificar código de @code-writer
+     * NO diseñar bloques de código al pasar instrucciones
+
+2. decomposer
+   - Modelo: zai-coding-plan/glm-4.7 → ollama/qwen3:32b
+   - Fallback: openrouter/deepseek/deepseek-v3.2 → opencode/big-pickle
+   - Prompt: "Carga SIEMPRE la skill 'task-decomposition'"
+   - RESTRICCIÓN ABSOLUTA: no escribir código, ni fragmentos, ni pseudocódigo
+
+3. explorer
+   - Modelo: openrouter/xiaomi/mimo-v2-flash → ollama/qwen3-coder:30b
+   - Fallback: (no tenía) → ollama/qwen3:32b
+   - Permisos: webfetch "allow" → "deny"
+   - Prompt: skills 'explorer-protocol' + 'anti-loop-protocol'; reglas
+     anti-búsqueda (máximo 2 intentos, prohibido repetir regex)
+
+4. researcher
+   - Modelo: ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M →
+             ollama/qwen3-coder:30b
+   - Fallback: openrouter/xiaomi/mimo-v2-flash → ollama/qwen3:32b
+
+5. code-writer
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/qwen3-coder:30b
+   - Fallback: opencode/big-pickle → ollama/qwen3:32b
+   - Permisos: agregado "skill": { "*": "allow" }
+   - Prompt: bash con heredoc (cat >) para archivos completos; edit para
+     cambios parciales; leer archivo post-escritura para verificar; cargar
+     skill 'contract-verification' antes de implementar dependencias; NO
+     eliminar funcionalidad existente
+
+6. qa-validator
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:30b-a3b → ollama/qwen3:32b
+   - Prompt: skills qa-protocol + angular-architecture + anti-loop-protocol;
+     paso 2b para errores 'Property does not exist' (clasificar como error
+     de Integración y enviar a code-writer con ruta del archivo fuente)
+
+7. package-manager
+   - Modelo: zai-coding-plan/glm-4.5-air → ollama/qwen3-coder:30b
+   - Fallback: zai-coding-plan/glm-4.7 → ollama/qwen3:32b
+   - Prompt: agregada skill 'angular-scaffolding'
+   - Permisos bash ampliados: npm install (simple), npm --version, npm run *,
+     node --version, npx *, ng *, ls *, find *, mkdir *, cp *, mv *, rm *, cat *
+
+8. e2e-validator
+   - Modelo: openrouter/qwen/qwen3-coder-next → ollama/qwen3-coder:30b
+   - Fallback: ollama/qwen3:30b-a3b → ollama/qwen3:32b
+   - Prompt: agregada skill 'anti-loop-protocol'
+   - Permisos: npx kill-port 4200, cd *, ls *, mkdir *
+
+9. unit-tester
+   - Modelo: openrouter/deepseek/deepseek-v3.2 → ollama/qwen3-coder:30b
+   - Fallback: openrouter/qwen/qwen3-coder-next → ollama/qwen3:32b
+   - Prompt: agregada skill 'anti-loop-protocol'
+
+PROVEEDORES:
+
+1. copilot: ELIMINADO (era de pago, innecesario con modelos locales)
+2. openrouter: ELIMINADO (todos los modelos migrados a local)
+3. zai-coding-plan: ELIMINADO (no aplica en entorno local)
+4. ollama: ÚNICO proveedor. Modelos:
+   - qwen3-coder:30b (tools:true, reasoning:true, num_ctx:262144,
+     temperature:0.0, top_p:0.8, top_k:20, repeat_penalty:1.0)
+   - qwen3:32b (tools:true, reasoning:true, num_ctx:40960,
+     temperature:0.1, top_p:0.95, top_k:20, repeat_penalty:1.0)
+5. NUEVA sección "skills": { "paths": ["./.opencode/skills"] }
+   (Responde al problema 3)
+
+SKILLS:
+  AGREGADAS:
+  - angular-scaffolding/ — Para scaffolding Angular (generar componentes,
+    servicios, etc.). Responde al problema 7.
+  - orchestrator-protocol/ — Protocolo anti-contradicción: orquestador lee
+    prompt del subagente antes de instruir. Responde al problema 4.
+  - contract-verification/ — Verificación de contratos entre archivos
+    dependientes. Responde al problema 6.
+  CONSERVADAS: angular-architecture, angular-packages, angular-patterns,
+               anti-loop-protocol, e2e-protocol, explorer-protocol,
+               qa-protocol, task-decomposition, olds/.
+  ELIMINADAS: Ninguna.
+
+AGENTS.md: NUEVO. Documentación completa del sistema multi-agente:
+           - Diagrama de arquitectura ASCII con 9 agentes
+           - Roles, reglas y permisos detallados
+           - Tabla de modelos disponibles
+           - Tabla de 9 skills con propósitos
+           - 6 reglas de interacción
+           - Flujo de trabajo típico
+           - Comandos de validación
+
+RESULTADO: No aplica (no hay proyecto Angular asociado).
+================================================================================

@@ -1,0 +1,24 @@
+<div class="welcome-container">
+  <div class="welcome-content">
+    <h1 class="title neon-glow-green">DINO RUNNER</h1>
+    <p class="subtitle">El clásico juego del dinosaurio</p>
+    
+    <div class="instructions">
+      <h2>Instrucciones:</h2>
+      <ul>
+        <li>Presiona ESPACIO o haz clic para saltar</li>
+        <li>Puedes saltar 2 veces seguidas (doble salto)</li>
+        <li>Esquiva los obstáculos rojos que aparecen</li>
+        <li>La velocidad aumenta con el tiempo</li>
+        <li>¡Supera tu récord!</li>
+      </ul>
+    </div>
+
+    <div class="actions">
+      <a class="btn-play neon-border-cyan" routerLink="/game">JUGAR</a>
+      <button class="btn-record">
+        Ver récord: {{ highScoreService.highScore() }}
+      </button>
+    </div>
+  </div>
+</div>

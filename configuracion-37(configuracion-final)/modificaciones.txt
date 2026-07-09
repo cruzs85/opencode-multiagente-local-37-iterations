@@ -1,0 +1,34 @@
+MODIFICACIONES: configuracion-36 → configuracion-37
+==================================================
+Fuente: dino-runner28 | Comparado con: dino-runner27
+
+CAMBIOS EN opencode.json:
+- build prompt: idéntico en estructura a dino-runner27
+- code-writer: mismo prompt que dino-runner27
+- qa-validator: mismo prompt que dino-runner27
+- explorer: mismo prompt que dino-runner27
+- debugging: mismo prompt que dino-runner27
+- decomposer: mismo prompt que dino-runner27
+- Provider: mismo que dino-runner27
+- Sin cambios significativos en configuración de agentes
+
+CAMBIOS EN AGENTS.md:
+- Idéntico a dino-runner27
+- Misma estructura, reglas, skills, memoria persistente
+
+ARCHIVOS ADICIONALES EN FUENTE (no copiados a resultado/):
+- e2e/ : tests end-to-end (excluido de resultado/)
+- test-results/ : resultados de pruebas (excluido de resultado/)
+- Objetivos.txt: documentación de objetivos del proyecto (excluido)
+- Readme.md: documentación (excluido)
+
+RESUMEN: Última configuración de la serie (final).
+- Configuración de agente estable respecto a iteración anterior
+- Proyecto Angular completo con estructura madura
+- Archivos extras en fuente (e2e, test-results, docs) excluidos de resultado/
+- Representa la configuración más refinada de la serie dino-runner
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/ (excluyendo node_modules, dist, coverage, .playwright, .angular, .git, test-results, e2e, playwright-report)
+- Archivos extra: e2e/, test-results/ excluidos explícitamente

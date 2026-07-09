@@ -1,0 +1,45 @@
+<div class="game-container">
+  <div class="header">
+    <div class="score">Puntuación: {{ score() }}</div>
+    <div class="high-score">Récord: {{ highScore() }}</div>
+  </div>
+  
+  <div class="game" [style.width.%]="100" [style.height.px]="gameHeight()">
+    <div 
+      class="dinosaur"
+      [style.bottom.px]="dinosaurY()"
+      [style.width.px]="dinoWidth()"
+      [style.height.px]="dinoHeight()"
+      [style.--dino-head-width.px]="dinoHeadWidth()"
+      [style.--dino-head-height.px]="dinoHeadHeight()"
+      [style.--dino-tail-width.px]="dinoTailWidth()"
+      [style.--dino-tail-height.px]="dinoTailHeight()"
+    ></div>
+    
+    @for (obs of obstacles(); track obs.x) {
+      <div 
+        class="obstacle"
+        [style.left.px]="obs.x"
+        [style.width.px]="obs.width"
+        [style.height.px]="obs.height"
+      ></div>
+    }
+    
+    <div class="ground" [style.height.px]="groundHeight()"></div>
+    <div class="debug-info">{{ dinosaurDebug() }}</div>
+    
+    @if (!isPlaying() && !isGameOver()) {
+      <div class="start-message">
+        <p>Presiona ESPACIO o FLECHA ARRIBA para saltar</p>
+      </div>
+    }
+    
+    @if (isGameOver()) {
+      <div class="game-over">
+        <h2>¡Fin del juego!</h2>
+        <p>Puntuación final: {{ score() }}</p>
+        <p class="restart">Presiona ESPACIO para jugar de nuevo</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="welcome-container">
+  <h1 class="title">🦖 DINO RUNNER</h1>
+  
+  <div class="instructions">
+    <p>Presiona ESPACIO o haz clic para empezar</p>
+    <p>ESPACIO / CLIC = Saltar (doble salto permitido)</p>
+  </div>
+
+  @if (highScore() > 0) {
+    <div class="high-score">
+      🏆 Récord: {{ highScore() }}
+    </div>
+  }
+
+  <button class="start-button" (click)="startGame()">
+    Comenzar
+  </button>
+</div>

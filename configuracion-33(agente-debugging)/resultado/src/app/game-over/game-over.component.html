@@ -1,0 +1,15 @@
+<div class="game-over-container">
+  <h1 class="neon-glow-red">GAME OVER</h1>
+  
+  <p class="score">Puntuación: {{ score() }}</p>
+  <p class="high-score">Récord: {{ highScore() }}</p>
+  
+  @if (score() >= highScore() && score() > 0) {
+    <p class="new-record neon-flicker">¡Nuevo Récord!</p>
+  }
+  
+  <div class="buttons-container">
+    <a class="btn retry-btn" [routerLink]="['/game']">REINTENTAR</a>
+    <a class="btn home-btn" [routerLink]="['/']">INICIO</a>
+  </div>
+</div>

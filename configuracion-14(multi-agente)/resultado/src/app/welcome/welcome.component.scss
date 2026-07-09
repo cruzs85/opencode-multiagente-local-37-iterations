@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7f7;
+}
+
+.welcome-container {
+  text-align: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.instructions {
+  color: #666;
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.instructions li {
+  margin: 0.5rem 0;
+}
+
+.start-button {
+  background: #535353;
+  color: white;
+  padding: 16px 48px;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border: none;
+  margin: 1rem 0;
+  transition: background 0.3s;
+}
+
+.start-button:hover {
+  background: #333;
+}
+
+.record {
+  color: #e6a817;
+  margin-top: 1rem;
+  font-weight: bold;
+}

@@ -1,0 +1,19 @@
+<div class="welcome-container">
+  <h1 class="welcome-title">DINOSAUR RUNNER</h1>
+  
+  <div class="instructions">
+    <h2>Instrucciones</h2>
+    <ul>
+      <li>Presiona <strong>ESPACIO</strong> o <strong>↑</strong> para saltar</li>
+      <li>Puedes saltar <strong>2 veces</strong> seguidas</li>
+      <li>Esquiva los obstáculos que aparecen</li>
+      <li>La velocidad aumenta con el tiempo</li>
+    </ul>
+  </div>
+  
+  <div class="high-score">
+    <p>Récord: <span data-high-score>{{ highScoreService.highScore() }}</span></p>
+  </div>
+  
+  <a [routerLink]="['/game']" class="neon-button start-button">JUGAR</a>
+</div>

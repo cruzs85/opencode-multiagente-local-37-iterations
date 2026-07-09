@@ -1,0 +1,67 @@
+================================================================================
+MODIFICACIONES: configuracion-28
+Comparación con: configuracion-21
+================================================================================
+
+Origen: uno/dino-runner19/
+Descripción: opencode.json directo, con Angular
+
+RESUMEN DE CAMBIOS RESPECTO A CONFIG-21:
+  - ui-designer: ollama/model-ui-designer -> ollama/qwen3:32b
+
+AGENTES:
+
+build:
+  Modelo: opencode-go/kimi-k2.6 (IGUAL)
+
+decomposer:
+  Modelo: ollama/qwen3:32b (IGUAL)
+
+explorer:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+researcher:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+code-writer:
+  Modelo: ollama/model-code-writer (IGUAL)
+
+qa-validator:
+  Modelo: ollama/model-qa-validator (IGUAL)
+
+package-manager:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+verifier:
+  Modelo: ollama/model-verifier (IGUAL)
+
+analyst:
+  Modelo: ollama/qwen3:32b (IGUAL)
+
+ui-designer:
+  Modelo: ollama/model-ui-designer -> ollama/qwen3:32b (CAMBIO)
+
+PROVEEDORES:
+
+  opencode-go
+  ollama
+
+SKILLS:
+  Skills path: ./.opencode/skills
+  Mismas skills que config-21
+
+PROBLEMAS REFERIDOS:
+  1. ui-designer cambia de ollama/model-ui-designer a ollama/qwen3:32b (model-ui-designer explícitamente reemplazado).
+  2. Reglas E2E TESTS: tests en e2e/, no en src/app/.
+  3. CANVAS: No usar selectores DOM en elementos canvas.
+  4. DIAGNÓSTICO JIT MODE para Playwright.
+  5. Verifier: max skill loads cambia de 2 a 3.
+  6. Procesos en background: no usar &.
+  7. Requerimientos de usuario prevalecen sobre ui-design-system.
+  8. QA Validator debe verificar webServer en playwright.config.ts.
+  9. Package Manager incluye scaffolding con .ng-temp y node -e.
+  10. Formato spec-ui detallado en Handoff entre Agentes.
+  11. Nuevos comandos: npm install --save-dev @playwright/test, npx playwright install chromium.
+
+RESULTADO: Proyecto Angular incluido en resultado/
+================================================================================

@@ -1,0 +1,53 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7f7;
+  position: relative;
+}
+
+.game-container {
+  position: relative;
+  width: 800px;
+  height: 350px;
+
+  &__canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  &__restart-overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+  }
+
+  &__restart-btn {
+    background: #535353;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+      background: #333;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

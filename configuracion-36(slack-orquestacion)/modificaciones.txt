@@ -1,0 +1,27 @@
+MODIFICACIONES: configuracion-35 → configuracion-36
+==================================================
+Fuente: dino-runner27 | Comparado con: dino-runner26
+
+CAMBIOS EN opencode.json:
+- build prompt: añadidas REGLAS DE ORO al inicio
+  - build solo ORQUESTA, no investiga, no lee, no diagnostica
+  - Cualquier lectura de archivos se delega a explorer o debugging
+  - Confianza en el diagnóstico de debugging (no re-verificar)
+- build prompt: añadida sección NOTIFICACIONES SLACK (#opencode-agents)
+  - Cargar skill 'notifications' al inicio de cada sesión
+  - Enviar notificaciones en 3 momentos (prompt recibido, permiso solicitado, completado)
+  - Usar slack_send_slack_message SIEMPRE
+- build prompt: memory() search mantiene estructura similar
+
+CAMBIOS EN AGENTS.md:
+- Sin cambios respecto a dino-runner26
+- Mismas reglas, estructura del proyecto, skills, memoria persistente
+
+RESUMEN: Cambio enfocado en:
+1. Reforzar que build solo orquesta (no leer archivos directo)
+2. Añadir integración con Slack para notificaciones
+3. Mantener misma estructura de agentes y configuración
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/

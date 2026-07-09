@@ -1,0 +1,123 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f7f7f7;
+  font-family: 'Courier New', monospace;
+}
+
+.game-container {
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #535353;
+}
+
+.game {
+  position: relative;
+  background: #fff;
+  border: 2px solid #535353;
+  overflow: hidden;
+}
+
+.dinosaur {
+  position: absolute;
+  left: 5%;
+  
+  background: #535353;
+  transition: bottom 0.02s linear;
+}
+
+.dinosaur::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 5px;
+  width: var(--dino-head-width, 20px);
+  height: var(--dino-head-height, 20px);
+  background: #535353;
+  border-radius: 50%;
+}
+
+.dinosaur::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: var(--dino-tail-width, 10px);
+  height: var(--dino-tail-height, 15px);
+  background: #535353;
+}
+
+.obstacle {
+  position: absolute;
+  bottom: 0;
+  background: #535353;
+}
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #535353;
+}
+
+.start-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #535353;
+}
+
+.start-message p {
+  font-size: 18px;
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #535353;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px 40px;
+  border: 2px solid #535353;
+}
+
+.game-over h2 {
+  margin: 0 0 10px 0;
+}
+
+.game-over p {
+  margin: 5px 0;
+}
+
+.game-over .restart {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.debug-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #00ff00;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  z-index: 100;
+}

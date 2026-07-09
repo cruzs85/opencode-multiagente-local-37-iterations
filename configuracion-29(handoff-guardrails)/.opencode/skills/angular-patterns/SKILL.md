@@ -1,0 +1,79 @@
+---
+name: angular-patterns
+description: Reglas estrictas de sintaxis Angular para del Proyecto.
+---
+## Arquitectura Standalone
+- Componentes: standalone:true, prefijo 'app-', inject() vs constructor.
+- Archivos: Separar .html y .scss.
+
+## Signals & Estado
+- Servicios: @Injectable({providedIn:'root'}).
+- Privado: `_val = signal(x)`. Público: `val = this._val.asReadonly()`.
+- Lógica: Usar `computed()` para derivados.
+
+## Estructuras de Control (Sintaxis v17+)
+- `@if(cond){}`, `@for(item of list; track item.id){}`, `@switch`.
+- Template: Invocar signals como función `{{ sig() }}`.
+
+## Effects & Injector
+- Fuera de constructor: `private injector = inject(Injector); effect(fn, {injector: this.injector});`.
+
+## Estilos
+- BEM + SCSS, `:host` obligatorio, variables locales.
+- `styleUrl` (singular) es OBLIGATORIO. NUNCA usar `styleUrls` (plural). Angular 21+ con Vite build depreca `styleUrls`. Verificar con: `grep -rn "styleUrls" src/app/` debe devolver 0 resultados.
+
+## Imports Core
+signal, computed, effect, inject, Injectable, Component, Injector, input, output, DestroyRef, afterNextRender.
+
+## Signals: Inmutabilidad (OBLIGATORIO)
+- NUNCA mutar el valor obtenido de signal() y pasarlo de vuelta a .set()
+- Siempre crear nuevo objeto/array antes de .set():
+  • `this.signal.set({ ...old, prop: newVal })`  ✅
+  • `this.arraySignal.set([...oldArray, newElement])`  ✅
+  • `old.val = x; this.signal.set(old)`  ❌ (misma referencia, no notifica cambio)
+- `signal.update()` solo para valores primitivos (number, string, boolean) o cuando el nuevo valor no depende del anterior
+- Aplica tanto al crear un servicio NUEVO como al modificar uno existente
+
+## Event Listeners: Referencia Única (OBLIGATORIO)
+- Guardar handler en propiedad de clase como arrow function:
+  `private handleKey = (event: KeyboardEvent) => this.onKey(event);`
+- addEventListener y removeEventListener DEBEN usar la MISMA referencia:
+  • `window.addEventListener('keydown', this.handleKey);`       ✅
+  • `window.removeEventListener('keydown', this.handleKey);`    ✅
+  • `window.removeEventListener('keydown', this.onKey.bind(this));`  ❌
+- Cleanup: implementar OnDestroy con removeEventListener, o usar
+  inject(DestroyRef) + afterNextRender + destroyRef.onDestroy()
+- Aplica a cualquier componente Angular que registre listeners en window/document
+
+## Tests E2E con Playwright (OBLIGATORIO)
+
+### Ubicación
+- Todos los tests E2E van en `e2e/[nombre].e2e.spec.ts`
+- NUNCA en `src/app/[componente]/[componente].e2e.spec.ts`
+- NUNCA mezclados con tests unitarios (`.spec.ts`)
+
+### Configuración de Playwright (prerrequisito)
+Antes de escribir tests E2E, VERIFICAR que `playwright.config.ts` tenga:
+- `testDir: './e2e'` (NO `'./src'`)
+- `testMatch: '**/*.e2e.spec.ts'` (para excluir unit tests)
+- `webServer` configurado
+
+Si falta `testMatch` o `testDir` apunta a `./src`, Playwright procesará los unit tests de Angular (Jasmine) como E2E, causando: `Standard Angular field decorators are not supported in JIT mode`.
+
+### Nomenclatura
+- Archivo: `e2e/[pantalla].e2e.spec.ts` (ej: `e2e/welcome.e2e.spec.ts`)
+- Mínimo 15 tests por suite completo
+- Cada test con `test.describe()` agrupando por pantalla
+
+### Reglas de test
+- Pantalla bienvenida: verificar título, instrucciones, botón start, high score
+- Pantalla juego: verificar canvas, score, salto (Space/ArrowUp), doble salto, obstáculos, aumento velocidad
+- Pantalla gameover: verificar tras colisión, score, high score, botón retry/menu, persistencia localStorage
+- **Canvas**: Los elementos `<canvas>` NO tienen sub-elementos DOM. Usar selectores de elementos DOM reales (`.score`, `.speed`, botones) o `page.evaluate()`. NO usar selectores como `.dinosaur`, `.obstacle`.
+
+## Magic Numbers: Constantes con Nombre
+- Toda posición, tamaño, velocidad o límite numérico debe ser una constante
+  con nombre descriptivo, no un valor literal hardcodeado
+- Excepción: 0, 1, valores de inicialización triviales
+- Usar objetos de configuración o constantes de clase agrupadas semánticamente
+- Aplica tanto a creación como a modificación de cualquier componente/servicio

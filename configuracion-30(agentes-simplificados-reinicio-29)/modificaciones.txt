@@ -1,0 +1,73 @@
+MODIFICACIONES: configuracion-29 → configuracion-30
+==================================================
+Fuente: dino-runner21 | Comparado con: dino-runner20
+
+CAMBIOS PRINCIPALES EN opencode.json:
+- Simplificación radical de agentes: de 11 a 5 (eliminados: ui-designer, verifier, researcher, analyst, package-manager)
+- Eliminado sistema de handoff JSON (/tmp/handoff/)
+- Subagentes ahora usan modelo único "model-agent-base" (ollama/qwen3-coder:30b) en lugar de modelos dedicados
+- Añadido MCP Context7 (motivo: los modelos desconocían las APIs de Angular 21; se buscó que Context7 aportara documentación actualizada en tiempo real)
+- Añadido plugin opencode-mem para memoria persistente
+- Permisos simplificados (remove specific bash allowlists por agente)
+- Build prompt simplificado: sin árbol de decisiones, sin protocolo de orquestación
+- Se añadió agente "decomposer" con skills project-exploration + task-decomposition
+- Eliminadas skills: handoff-protocol, analyst-protocol, bootstrap-diagnostics, etc.
+- Skills conservadas: angular-patterns, angular-architecture, anti-loop-protocol, node-setup, build-scaffolding, ui-design-system, project-exploration, task-decomposition
+
+CAMBIOS EN AGENTS.md:
+- Simplificación drástica del documento (308 líneas → 98 líneas)
+- Eliminada sección completa de Guardrails de Seguridad
+- Eliminada sección de Handoff entre Agentes
+- Eliminados agentes: Researcher, Analyst, UI Designer, Verifier, Package Manager
+- Tabla de modelos simplificada
+- Nuevas secciones: "Planificación (decomposer)" y "Context7 MCP"
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/ (excluyendo node_modules, dist, coverage, .playwright, .angular, .git, test-results, e2e, playwright-report)
+- No se copia mnt/
+
+ESTRUCTURA DESTINO:
+  configuracion-30(agentes-simplificados-reinicio-29)/
+    opencode.json
+    AGENTS.md
+    .opencode/
+    resultado/ (proyecto Angular limpio)
+    modificaciones.txt
+
+==================================================
+OBSERVACIÓN DE REINICIO (añadida en revisión)
+==================================================
+Esta carpeta representa un REINICIO desde la config-29.
+
+CONTEXTO:
+  La config-29 (handoff-guardrails) alcanzó el pico de complejidad del proyecto:
+  10 agentes, 29 skills, sistema handoff JSON con guardrails de seguridad,
+  modelos dedicados por rol y protocolos de verificación cruzada.
+
+SÍNTOMAS DE SATURACIÓN OBSERVADOS EN CONFIG-29:
+  - Los agentes comenzaron a ignorar instrucciones del prompt y skills
+    cuando el contexto se saturaba.
+  - El sistema handoff JSON era frecuentemente omitido por los subagentes:
+    el orquestador terminaba delegando con task() directamente.
+  - Los guardrails de seguridad hacían los prompts demasiado extensos,
+    contribuyendo a la saturación de contexto.
+  - La cantidad de skills (29) hacía que los agentes fallaran al cargarlas
+    o las ignoraran parcialmente.
+  - La variabilidad de resultados era muy alta: una ejecución funcionaba
+    aceptablemente y la siguiente fallaba por completo.
+  - El consumo de VRAM con múltiples agentes especializados era elevado
+    y el riesgo de loops aumentaba con cada agente adicional.
+
+DECISIÓN DE REINICIO:
+  Se abandonó por completo el sistema handoff JSON y se redujo drásticamente
+  la arquitectura: de 10 agentes/29 skills → 5 agentes/8 skills.
+  Se eliminaron todos los agentes especializados (ui-designer, verifier,
+  researcher, analyst, package-manager) y se unificaron los subagentes
+  bajo un único modelo base (model-agent-base / qwen3-coder:30b).
+
+LECCIÓN DOCUMENTADA:
+  "Entre más agentes existan mayor parece ser la variabilidad de resultados."
+  La config-29 demostró empíricamente que la complejidad excesiva degrada
+  el comportamiento de los agentes locales, validando la conclusión
+  exploratoria #5 del proyecto.

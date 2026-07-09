@@ -1,0 +1,135 @@
+================================================================================
+MODIFICACIONES: configuracion-14(multi-agente)
+Comparación con: configuracion-13(mysql-slack)
+================================================================================
+
+Origen: uno/dino-runner9/ (Dinosaur Runner, Angular, 2 configs)
+AGENTS.md: PRESENTE (mismo contenido que config-13)
+.opencode/skills/: skills activas (mismas skills que config-13)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (principal) + nueva-config.json (config secundaria simple)
+
+CAMBIO DE PARADIGMA:
+  config-13: 100% local, orquestador con opencode/big-pickle, integración MySQL,
+             notificaciones Slack, partial-edit-protocol.
+  config-14: 100% local, orquestador CONTINÚA con opencode/big-pickle,
+             SE AGREGAN nuevos subagentes: verifier, e2e-validator, unit-tester.
+             SE AGREGAN skills: angular-architecture, angular-packages,
+             angular-patterns, angular-scaffolding, anti-loop-protocol, 
+             contract-verification, delegation-protocol, e2e-protocol,
+             explorer-protocol, game-loop-patterns, integration-verification,
+             orchestrator-protocol, partial-edit-protocol, post-implementation,
+             post-write-verification, qa-protocol, task-decomposition.
+             Permisos más restrictivos para subagentes con bash/deny.
+             Flujo orquestador → decomposer → code-writer → verifier → qa-validator → e2e-validator.
+
+PROBLEMAS REFERIDOS:
+  1. Gestión multi-agente completa: se separan roles de verifier, e2e-validator,
+     unit-tester como agentes independientes (antes fusionados en qa-validator).
+  2. Nuevas skills para verificación post-escritura: contract-verification,
+     post-write-verification, angular-architecture, game-loop-patterns,
+     integration-verification.
+  3. Skills para scaffolding: angular-scaffolding, angular-packages.
+  4. Delegación estructurada: delegation-protocol para code-writer.
+  5. Protocolo anti-bucles: anti-loop-protocol para todos los subagentes.
+  6. nueva-config.json: config secundaria simple de prueba.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (SIN CAMBIO vs config-13)
+   - Prompt: COMPLETAMENTE RENOVADO. Prompt mucho más extenso con skills
+     obligatorias (orchestrator-protocol, post-implementation, notifications,
+     partial-edit-protocol). Delega a code-writer SIN bloques de código,
+     solo estructura. Flujos definidos para verifier, qa-validator, e2e-validator.
+   - Permisos: task.* allow, edit deny, bash deny, skill.* allow,
+     read/glob/grep/todowrite/question allow.
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (SIN CAMBIO)
+   - Prompt: simplificado "Carga 'task-decomposition' y consulta AGENTS.md"
+   - Permisos: edit deny, bash deny, task deny, skill.* allow,
+     read/glob/grep/todowrite/question allow.
+
+3. explorer (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: TIPO A (ejecución), TIPO B (búsqueda rápida), TIPO C (análisis estructurado).
+     Skills: explorer-protocol, anti-loop-protocol. MySQL si aplica.
+   - Permisos: edit deny, bash restrict (node, head, wc, cat, ls, echo + db-query),
+     webfetch deny, skill.* allow, read/glob/grep/todowrite/question allow.
+
+4. researcher (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Investigación de APIs externas, propuesta de interfaces Angular.
+   - Permisos: edit deny, bash deny, webfetch allow, websearch allow,
+     skill.* allow, read/glob/grep/todowrite/question allow.
+
+5. code-writer (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Ejecutor de archivos. Solo escribe. No verifica.
+     Skills: json-safe-edit para archivos JSON.
+     Reglas: cat > para archivos nuevos, edit para cambios parciales.
+   - Permisos: edit allow, bash allow, skill.* allow, read/glob/grep/todowrite/question allow.
+   - Fallback: ollama/qwen3:32b
+
+6. qa-validator (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Ingeniero QA modo solo-reporte. Skills: qa-protocol, angular-architecture,
+     angular-boilerplate-check, anti-loop-protocol.
+   - Permisos: edit deny, bash restrict (npm run build*, npm test*, npm run lint*),
+     task solo code-writer/researcher/decomposer, skill.* allow.
+   - Fallback: ollama/qwen3:32b
+
+7. package-manager (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Skills angular-architecture, angular-scaffolding, angular-packages.
+   - Permisos: edit allow, bash restrict (npm install*, npm ci*, npx*, ng*, comandos sistema),
+     webfetch allow.
+   - Fallback: ollama/qwen3:32b
+
+8. e2e-validator (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Validación funcional E2E con Playwright. Skills: e2e-protocol, anti-loop-protocol.
+   - Permisos: edit deny, bash restrict (npx playwright test*, kill-port),
+     task code-writer/decomposer.
+   - Fallback: ollama/qwen3:32b
+
+9. unit-tester (NUEVO)
+   - Modelo: ollama/qwen3-coder:30b
+   - Prompt: Pruebas unitarias con Jest/Jasmine. Skills: anti-loop-protocol.
+   - Permisos: edit allow (solo *.spec.ts), bash restrict (npm test*, npx jest*),
+     task code-writer.
+   - Fallback: ollama/qwen3:32b
+
+10. verifier (NUEVO)
+    - Modelo: ollama/qwen3-coder:30b
+    - Prompt: Validación post-escritura. Skills según tipo de archivo:
+      contract-verification, post-write-verification, angular-architecture,
+      game-loop-patterns, integration-verification.
+    - Permisos: edit deny, bash deny, skill.* allow, task code-writer.
+    - Fallback: ollama/qwen3:32b
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos que config-13 (qwen3-coder:30b, qwen3:32b).
+     Mismas opciones de configuración.
+  2. plugin: ["opencode-link", "@sillybit/opencode-plugin-everynotify"] (IGUAL)
+
+SKILLS:
+  NUEVAS (vs config-13): Se reestructuran completamente:
+  - angular-architecture, angular-packages, angular-patterns, angular-scaffolding
+  - anti-loop-protocol, contract-verification, delegation-protocol
+  - e2e-protocol, explorer-protocol, game-loop-patterns
+  - integration-verification, json-safe-edit, mysql, notifications
+  - orchestrator-protocol, partial-edit-protocol, post-implementation
+  - post-write-verification, qa-protocol, task-decomposition
+  DESAPARECEN (vs config-13): agent-scope-limits (se integra en prompts individuales)
+
+AGENTS.md: PRESENTE. Contenido similar a config-13 con tabla completa de skills
+  y roles de todos los agentes. Entorno local con escritorio documentado.
+
+CONFIGS ALTERNATIVAS:
+  - nueva-config.json: config secundaria simple {"version":1,"nombre":"Configuración de prueba"}
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

@@ -1,0 +1,13 @@
+<div class="game-container" data-testid="game-screen">
+  <canvas #gameCanvas width="800" height="400"></canvas>
+  <div class="hud">
+    <div class="score">PUNTOS: {{ gameService.scoreSignal() }}</div>
+    <div class="high-score">RÉCORD: {{ gameService.highScoreSignal() }}</div>
+  </div>
+  @if (gameService.stateSignal() === 'paused') {
+    <div class="pause-overlay">
+      PAUSADO<br>
+      <span style="font-size:1rem">Presiona ESC para continuar</span>
+    </div>
+  }
+</div>

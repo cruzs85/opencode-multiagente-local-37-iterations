@@ -1,0 +1,95 @@
+:host {
+  display: block;
+}
+
+.game-container {
+  position: relative;
+  background: var(--bg-game);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 800px;
+  margin: auto;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.score {
+  font-family: 'Press Start 2P', cursive;
+  color: var(--neon-green);
+  font-size: 1rem;
+}
+
+.high-score {
+  color: var(--neon-yellow);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--surface-overlay);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.game-over {
+  font-family: 'Press Start 2P', cursive;
+  color: var(--neon-red);
+  text-shadow: 0 0 15px var(--neon-red);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: pulse 1s infinite;
+}
+
+.final-score {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.retry-button, .menu-button {
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+  font-family: 'Press Start 2P', cursive;
+  padding: 0.75rem 1.5rem;
+  margin: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover, .menu-button:hover {
+  background: var(--neon-yellow);
+  box-shadow: 0 0 15px var(--neon-yellow);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+}

@@ -1,0 +1,57 @@
+.game-over-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0a0a0a;
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+.game-over-title {
+  font-size: 4rem;
+  color: #ff3366;
+  text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.score-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.score {
+  font-size: 1.5rem;
+  color: #00ff88;
+  margin: 0.5rem 0;
+}
+
+.new-record-badge {
+  font-size: 2rem;
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+  margin-bottom: 2rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ffd700;
+  border-radius: 5px;
+}
+
+.play-again-button {
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  background-color: #00ff88;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #00ff88;
+}
+
+.play-again-button:hover {
+  background-color: #00cc6a;
+  box-shadow: 0 0 20px #00ff88;
+}

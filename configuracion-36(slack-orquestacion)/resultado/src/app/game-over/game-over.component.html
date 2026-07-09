@@ -1,0 +1,13 @@
+<div class="game-over-container">
+  <h1 class="game-over-title">GAME OVER</h1>
+  
+  <div class="stats">
+    <p class="final-score">Puntuación: <span data-final-score>{{ gameService.score() }}</span></p>
+    <p class="high-score">Récord: <span data-high-score>{{ highScoreService.highScore() }}</span></p>
+  </div>
+  
+  <div class="actions">
+    <a [routerLink]="['/game']" class="neon-button retry-button" data-retry>REINTENTAR</a>
+    <a [routerLink]="['/welcome']" class="neon-button menu-button" data-menu>MENÚ PRINCIPAL</a>
+  </div>
+</div>

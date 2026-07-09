@@ -1,0 +1,14 @@
+<div class="welcome-screen" data-testid="welcome-screen">
+  <h1 class="welcome-title" data-testid="welcome-title">DINO RUNNER</h1>
+  <div class="welcome-instructions">
+    <p>Presiona ESPACIO o toca la pantalla para saltar</p>
+    <p>Doble salto permitido</p>
+    <p>Esquiva los obstáculos que aparecen</p>
+  </div>
+  <div class="welcome-stats">
+    @if (highScore() > 0) {
+      <p class="high-score" data-testid="high-score">Récord: {{ highScore() }}</p>
+    }
+  </div>
+  <button class="play-button" data-testid="play-button" (click)="onStart()">JUGAR</button>
+</div>

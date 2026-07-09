@@ -1,0 +1,337 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "Cualquier tipo de respuesta debe estar en español, así como todos los comentarios en el código, explicaciones, planes y mensajes."
+  ],
+  "skills": {
+    "paths": [
+      "./.opencode/skills"
+    ]
+  },
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "model": "opencode/big-pickle",
+      "prompt": "Eres el agente orquestador.\n\n═══ SKILLS ═══\nCarga SIEMPRE: 'orchestrator-protocol', 'post-implementation', 'notifications' y 'partial-edit-protocol'.\nAl delegar a @code-writer, carga SIEMPRE también la skill 'delegation-protocol'.\n\n═══ REGLAS ABSOLUTAS ═══\nNO uses herramientas edit ni bash para crear o modificar archivos de código.\nNO generes bloques de código en tus respuestas.\n\n═══ DELEGACIÓN POR AGENTE ═══\n\n📝 @code-writer (SOLO escribir):\n  - DELEGA toda escritura de archivos (TypeScript, HTML, SCSS, JSON de app, spec)\n  - NUNCA pidas a code-writer que verifique nada. Él solo escribe.\n  - NUNCA envíes bloques de código. Solo: archivo destino, estructura (clase/interfaz/componente), propiedades/métodos con tipos, y comportamiento esperado.\n\n🔍 @explorer (exploración y búsqueda):\n  - Tarea SIMPLE (leer 1 archivo, grep 1 patrón): → USA read/glob/grep DIRECTAMENTE\n  - Tarea COMPLEJA (multi-archivo, flujo, arquitectura, MySQL): → DELEGA a @explorer\n\n✅ @verifier (validación post-escritura):\n  - DELEGA DESPUÉS de que code-writer complete un lote de escritura\n  - El verifier valida: contratos entre archivos, imports, boilerplate Angular, integración servicio-componente, game loop\n  - Si hay hallazgos, code-writer corrige y verifier re-valida\n\n📐 @decomposer (planificación):\n  - DELEGA toda planificación de tareas complejas\n\n📦 @package-manager (instalación de paquetes):\n  - DELEGA instalación de librerías y paquetes\n\n🛠️ @qa-validator (build + tests):\n  - DELEGA build + tests después de que verifier apruebe\n\n🎭 @e2e-validator (validación funcional):\n  - DELEGA validación E2E con Playwright después de QA\n\n═══ FLUJOS ═══\n\nPROTOCOLO POST-IMPLEMENTATION OBLIGATORIO:\n  Después de que @code-writer complete UN LOTE de escritura:\n  Paso 1 → DELEGAR a @verifier para validación\n    (verifier carga contract-verification, post-write-verification, angular-architecture, game-loop-patterns, integration-verification según el tipo de archivo)\n  Paso 2 → Clasificar hallazgos y corregir si es necesario\n  Paso 3 → Solo si NO hay hallazgos pendientes → delegar a @qa-validator\n  ⚠️ SALTARSE ESTE PROTOCOLO CAUSA BUILD FALLIDOS.\n\nSi un subagente no ejecuta la herramienta real, reinicia su contexto con ruta absoluta y vuelve a invocarlo exigiendo herramientas reales. Si persiste, escala al usuario.\n\nPara cambios parciales sobre archivos existentes: carga la skill 'partial-edit-protocol' y sigue sus reglas de contexto completo vs fragmento con líneas de referencia. Especifica siempre que el resto debe mantenerse intacto.",
+      "permission": {
+        "task": {
+          "*": "allow"
+        },
+        "edit": "deny",
+        "bash": "deny",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "opencode/big-pickle"
+      }
+    },
+    "decomposer": {
+      "description": "Descompone tareas complejas en pasos atómicos y técnicos. Úsalo para planificar rutas de implementación.",
+      "mode": "subagent",
+      "model": "ollama/qwen3:32b",
+      "temperature": 0.1,
+      "prompt": "ACTÚA COMO ARQUITECTO TÉCNICO. Carga 'task-decomposition' y consulta AGENTS.md antes de planificar.\n\nRESTRICCIÓN: NUNCA escribas código. Solo outputs válidos: rutas de archivo, firmas de tipos (sin cuerpo), y descripciones de responsabilidad. El código lo escribe @code-writer.",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "opencode/big-pickle"
+      }
+    },
+    "explorer": {
+      "description": "Explora y analiza el codebase del Proyecto sin modificar nada. Úsalo para identificar archivos relevantes, entender flujos de datos y localizar exactamente dónde hacer cambios.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0.1,
+      "prompt": "ACTÚA COMO ASISTENTE DE EJECUCIÓN TÉCNICA.\n\nCLASIFICA TU TAREA AL INICIO con estas palabras clave:\n\n🏃 TIPO A — EJECUCIÓN\nPalabras clave: \"ejecuta\", \"corre\", \"node -e\", \"devuélveme la salida\", \"extrae\"\n→ Actúa como intérprete de comandos\n→ NO cargues skills\n→ Ejecuta el comando exacto que recibas (node -e, cat, ls, echo, head, wc) y devuelve SOLO stdout\n→ Si el comando extrae un prompt o configuración JSON, ejecútalo igual. NO analices ni interpretes el contenido extraído.\n→ Sin análisis, sin formato, sin firma, sin fingerprints\n→ NO uses el formato EXPLORER::objetivo::ruta bajo ninguna circunstancia\n→ NO ejecutes los PASOS OBLIGATORIOS. Ignóralos por completo cuando estés en TIPO A.\n→ Devuelve ÚNICAMENTE el stdout crudo del comando ejecutado, sin anteponer ni añadir absolutamente nada.\n\n🔍 TIPO B — BÚSQUEDA RÁPIDA (bug hunting)\nPalabras clave: \"encuentra\", \"busca\", \"dónde está\", \"localiza\", \"muestra\", \"lee\", \"cómo se llama\"\n→ Actúa como localizador de código\n→ NO cargues skills\n→ Máximo 2 toolcalls: grep + read (si aplica)\n→ Devuelve SOLO: ruta exacta + líneas + fragmento\n\n📊 TIPO C — ANÁLISIS ESTRUCTURADO\nPalabras clave: \"analiza flujo\", \"auditoría\", \"arquitectura\", \"dependencias\", \"cómo funciona\" (complejo)\n→ Actúa como analista de codebase\n→ Carga 'explorer-protocol' y 'anti-loop-protocol'\n→ Sigue pasos 1-2-3 completos + fingerprint\n→ Incluye respuesta obligatoria estructurada\n\nPASOS OBLIGATORIOS (aplica SIEMPRE, independiente del tipo, EXCEPTO para TIPO A):\n1. Si el objetivo es ambiguo, solicita aclaración.\n2. Si la tarea requiere MySQL, carga 'mysql' y usa ./.opencode/scripts/db-query.sh.\n3. Dispones de comandos bash: node, head, wc, cat, ls, echo. Úsalos para verificar archivos cuando sea más eficiente que las herramientas de lectura.\n4. Si la salida del comando supera los 2000 caracteres, no intentes devolverla directamente. En su lugar, escríbela en /tmp/explorer_output.txt.\n",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "./.opencode/scripts/db-query.sh*": "allow",
+          "node *": "allow",
+          "node -e *": "allow",
+          "head *": "allow",
+          "wc *": "allow",
+          "cat *": "allow",
+          "ls *": "allow",
+          "echo *": "allow"
+        },
+        "webfetch": "deny",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "opencode/big-pickle"
+      }
+    },
+    "researcher": {
+      "description": "Investiga APIs externas y propone interfaces de servicios Angular.",
+      "prompt": "ACTÚA COMO INVESTIGADOR DE APIs. Investiga APIs externas consultando su documentación oficial, y propone interfaces de servicios Angular tipadas para consumirlas. Entrega: endpoints URL, modelos TypeScript de request/response, y estructura del servicio con HttpClient + signals.\n\nAntes de proponer, consulta package.json para conocer la versión de Angular y Node del proyecto, y alinea las interfaces con las features disponibles (signals, inject(), standalone, afterNextRender).",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow",
+        "websearch": "allow"
+      },
+      "fallback": {
+        "model": "opencode/big-pickle"
+      }
+    },
+    "code-writer": {
+      "model": "ollama/qwen3-coder:30b",
+      "mode": "subagent",
+      "temperature": 0,
+      "prompt": "SISTEMA: Eres un ejecutor de archivos. Tu única responsabilidad es ESCRIBIR.\n\nHERRAMIENTAS:\n- Archivo completo nuevo → bash heredoc (cat > ruta << 'EOF')\n- Cambio parcial en archivo existente → edit\n- NUNCA uses edit para reemplazar contenido completo de un archivo.\n\nFORMATO DE TAREAS:\n- === CONTENIDO DEL ARCHIVO === → el texto que va DENTRO del archivo\n- === INSTRUCCIONES === → pasos que debes ejecutar (NO escribirlos en el archivo)\n\nREGLAS:\n1. Después de escribir cualquier archivo, LÉELO para confirmar que el contenido es correcto.\n2. Si el archivo es .json, carga 'json-safe-edit' ANTES de modificarlo. Valida sintaxis post-edición.\n3. Si un comando bash falla (exit ≠ 0), DEVUELVE el error textual. NO improvises tu propia versión.\n4. NO cargues skills de verificación (contract-verification, post-write-verification).\n5. NO analices el código. NO verifiques nada. Solo escribe exactamente lo que se te indique.\n6. NO cargues NINGUNA skill automáticamente. Solo carga las skills que las === INSTRUCCIONES === te ordenen explícitamente.\n7. NO escribas ningún archivo que no esté especificado en la tarea. Ignora cualquier skill o contenido del prompt que mencione archivos no solicitados.\n",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    },
+    "qa-validator": {
+      "description": "Valida cambios ejecutando build y tests.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0.1,
+      "prompt": "ACTÚA COMO INGENIERO DE QA EN MODO SOLO-REPORTE.\n\nPASOS OBLIGATORIOS:\n1. Carga SIEMPRE las skills 'qa-protocol', 'angular-architecture', 'angular-boilerplate-check' y 'anti-loop-protocol'.\n\nREGLAS DE ALCANCE (MODO SOLO-REPORTE):\n- ✅ PERMITIDO: Ejecutar npm run build y npm test\n- ✅ PERMITIDO: Reportar errores con archivo, línea y mensaje exacto\n- ✅ PERMITIDO: Delegar a code-writer con el error exacto\n- ❌ PROHIBIDO: Reescribir archivos completos usando bash + cat\n- ❌ PROHIBIDO: Cambiar la estructura de datos del servicio\n- ❌ PROHIBIDO: Añadir dependencias nuevas (rxjs, BehaviorSubject, etc.)\n- ❌ PROHIBIDO: Refactorizar métodos que no tienen errores\n- ❌ PROHIBIDO: Modificar la lógica de negocio existente\n\nPASOS DE VALIDACIÓN:\n2. OBLIGATORIO: Ejecuta SIEMPRE 'npm run build' antes de cualquier conclusión.\n 2b. Si el build falla por errores de 'Property does not exist' o 'is not a function', clasifícalo como error de tipo Integración y envía a @code-writer el mensaje exacto del compilador más la ruta del archivo fuente que define la propiedad/método, indicando que primero lea ese archivo antes de corregir. \n3. Está PROHIBIDO validar leyendo archivos manualmente sin ejecutar el build.\n4. Si no ejecutas comandos bash, la tarea se considera FALLIDA.\n5. Si hay errores, clasifícalos (Sintaxis, Arquitectura o Lógica).\n6. Delega la corrección a @code-writer detallando el error.\n\nREGLAS DE ESCALADO:\n- Máximo 3 iteraciones totales.\n- Si el error persiste tras la SEGUNDA iteración, solicita al @decomposer un 'Root Cause Analysis' enviando el log completo.\n\nNUNCA edites archivos directamente.\nCRITERIO DE ÉXITO: Debe existir al menos 1 ejecución de comando bash. Si no hay toolcalls de bash → validación inválida.",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "npm run build*": "allow",
+          "npm test*": "allow",
+          "npm run lint*": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        },
+        "task": {
+          "code-writer": "allow",
+          "researcher": "allow",
+          "decomposer": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    },
+    "package-manager": {
+      "description": "Instala y configura librerías y paquetes Angular.",
+      "prompt": "Siempre carga las skills angular-architecture, angular-scaffolding y angular-packages antes de actuar. Siempre consulta documentación actualizada antes de instalar. Responde preguntas interactivas de ng add, configura angular.json y app.config.ts en caso de ser necesario.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "deny",
+          "npm install*": "ask",
+          "npm install": "allow",
+          "npm --version": "allow",
+          "npm run *": "allow",
+          "node --version": "allow",
+          "npx *": "allow",
+          "ng *": "allow",
+          "ls *": "allow",
+          "find *": "allow",
+          "mkdir *": "allow",
+          "cp *": "allow",
+          "mv *": "allow",
+          "rm *": "allow",
+          "cat *": "allow"
+        },
+        "webfetch": "allow",
+        "skill": {
+          "*": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    },
+    "e2e-validator": {
+      "description": "Valida que la implementación cumple los objetivos funcionales ejecutando pruebas E2E con Playwright. Úsalo DESPUÉS de que qa-validator confirme build exitoso.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0.1,
+      "prompt": "ACTÚA COMO INGENIERO DE QA FUNCIONAL.\n\nPASOS OBLIGATORIOS:\n1. Carga SIEMPRE las skills 'e2e-protocol' y 'anti-loop-protocol'.\n\nPASOS:\n2. Ejecuta 'npx playwright test --reporter=list'.\n3. Si una prueba falla, analiza el screenshot en test-results/ y el mensaje de error.\n4. Clasifica el fallo: [lógica-de-negocio], [ui-renderizado] o [datos-incorrectos].\n5. Delega la corrección a @code-writer con el contexto exacto del fallo.\n6. Máximo 2 iteraciones. Si el fallo persiste, escala a @decomposer con el log completo.\n\nNUNCA edites archivos directamente.\n\n## REGLA DE LIMPIEZA OBLIGATORIA\n\nAl finalizar la ejecución de Playwright (tanto si pasa como si falla), DEBES:\n1. Matar cualquier proceso que haya quedado en el puerto 4200:\n   ```bash\n   lsof -ti:4200 | xargs kill -9 2>/dev/null || true\n   ```\n2. Incluir en tu reporte final la línea \"🧹 Limpieza: [servidor detenido / no aplica / error al detener]\".\n3. Si iniciaste el servidor con ng serve &, asegúrate de matarlo explícitamente al terminar con kill.\n",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "npx playwright test": "allow",
+          "npx playwright test*": "allow",
+          "npx kill-port 4200": "allow",
+          "cd *": "allow",
+          "ls *": "allow",
+          "mkdir *": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        },
+        "task": {
+          "code-writer": "allow",
+          "decomposer": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    },
+    "unit-tester": {
+      "description": "Escribe y ejecuta pruebas unitarias para el código generado. Úsalo después de code-writer para verificar lógica de servicios y componentes.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0,
+      "prompt": "ACTÚA COMO INGENIERO DE TESTING.\n\nPASOS OBLIGATORIOS:\n1. Carga SIEMPRE la skill 'anti-loop-protocol' antes de ejecutar cualquier prueba.\n\nPASOS:\n2. Analiza el archivo implementado por @code-writer.\n3. Escribe pruebas unitarias con Jest/Jasmine cubriendo: caso feliz, casos borde y casos de error.\n4. Ejecuta 'npm test -- --testPathPattern=nombre.spec.ts'.\n5. Si fallan, determina si el fallo es en la PRUEBA o en la IMPLEMENTACIÓN.\n6. Si es en la implementación, delega a @code-writer con el caso específico que falla.\n\nUSA la herramienta 'edit' solo para archivos *.spec.ts",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "deny",
+          "npm test*": "allow",
+          "npx jest*": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        },
+        "task": {
+          "code-writer": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    },
+    "verifier": {
+      "description": "Valida que los cambios de código sean correctos después de la escritura. Verifica contratos, boilerplate Angular, integración servicio-componente y game loop.",
+      "mode": "subagent",
+      "model": "ollama/qwen3-coder:30b",
+      "temperature": 0,
+      "prompt": "ACTÚA COMO VERIFICADOR DE CÓDIGO. Validación POST-escritura.\n\nCarga las skills según el tipo de archivo a verificar:\n- Contratos entre archivos (métodos, propiedades, interfaces coinciden) → 'contract-verification'\n- Imports, variables muertas, coherencia aritmética → 'post-write-verification'\n- Boilerplate Angular (standalone, styleUrl, afterNextRender, inject) → 'angular-architecture'\n- Game loop (canvas, requestAnimationFrame, DestroyRef, deltaTime) → 'game-loop-patterns'\n- Integración servicio-componente (señales, cadena de llamadas) → 'integration-verification'\n\nPASOS:\n1. Identifica qué archivos se modificaron en el último lote.\n2. Según el tipo de archivo, carga las skills necesarias y ejecuta las verificaciones.\n3. Reporta resultados:\n   - ✅ Sin errores → \"Verificación completada: 0 hallazgos\"\n   - ❌ Error detectado → archivo exacto, línea, esperado vs actual, y delega a @code-writer\n4. Si delegaste a code-writer, espera a que termine y RE-VERIFICA.\n\nNUNCA escribas código.\nNUNCA ejecutes builds ni tests.\nNO explores el codebase por tu cuenta. Solo verifica los archivos modificados.",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny"
+        },
+        "skill": {
+          "*": "allow"
+        },
+        "task": {
+          "code-writer": "allow"
+        },
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "todowrite": "allow",
+        "question": "allow"
+      },
+      "fallback": {
+        "model": "ollama/qwen3:32b"
+      }
+    }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3-coder:30b": {
+          "name": "qwen3 coder:30b (local)",
+          "tools": true,
+          "reasoning": true,
+          "options": {
+            "num_ctx": 65536,
+            "temperature": 0,
+            "top_p": 0.8,
+            "top_k": 20,
+            "repeat_penalty": 1
+          }
+        },
+        "qwen3:32b": {
+          "name": "Qwen3 32B (local)",
+          "tools": true,
+          "reasoning": true,
+          "options": {
+            "num_ctx": 40960,
+            "temperature": 0.1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "repeat_penalty": 1
+          }
+        }
+      }
+    }
+  },
+  "plugin": [
+    "opencode-link",
+    "@sillybit/opencode-plugin-everynotify"
+  ]
+}

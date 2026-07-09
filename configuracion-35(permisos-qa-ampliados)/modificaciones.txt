@@ -1,0 +1,23 @@
+MODIFICACIONES: configuracion-34 → configuracion-35
+==================================================
+Fuente: dino-runner26 | Comparado con: dino-runner25
+
+CAMBIOS EN opencode.json:
+- build prompt: cambios menores (formato de memory() search)
+- qa-validator: permisos bash añadidos: mkdir -p *, rm *, touch *, mv *
+  (permisos adicionales de sistema para gestión de archivos)
+- qa-validator: añadido "mkdir -p *" a bash allowlist
+- code-writer: sin cambios significativos
+- AGENTS.md: idéntico a dino-runner25
+
+CAMBIOS EN AGENTS.md:
+- Sin cambios significativos respecto a dino-runner25
+- Misma estructura, mismas reglas, mismos skills
+
+RESUMEN: Cambio menor centrado en ampliar permisos bash de qa-validator
+para permitir creación/eliminación de directorios y archivos durante
+la ejecución de tests. Configuración prácticamente idéntica a la anterior.
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/

@@ -1,0 +1,57 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #2c3e50;
+  color: white;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  padding: 20px;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.instructions {
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.start-button {
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s;
+}
+
+.start-button:hover {
+  background-color: #2ecc71;
+}
+
+.press-space {
+  animation: blink 1.5s infinite;
+  font-size: 1.1rem;
+}
+
+.high-score {
+  font-size: 1.3rem;
+  color: gold;
+  margin-bottom: 1rem;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}

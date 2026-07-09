@@ -1,0 +1,67 @@
+MODIFICACIONES: configuracion-31 → configuracion-32
+==================================================
+Fuente: dino-runner23 | Comparado con: dino-runner22
+
+CAMBIOS EN opencode.json:
+- Eliminado plugin "opencode-mem"
+- Eliminado MCP Context7 (motivo: no hizo diferencia apreciable; probablemente Context7 aún no contaba con documentación adecuada de Angular 21 en ese momento)
+- Instructions simplificadas (solo "Responde siempre en espanol...")
+- Build prompt: simplificado significativamente, eliminadas referencias a Context7 y opencode-mem
+- code-writer prompt: AHORA PUEDE ejecutar npm run build/test para verificar compilación
+  (antes: prohibición absoluta de ejecutar builds)
+- code-writer prompt: añadido "No reescribas un archivo mas de 2 veces"
+- code-writer prompt: habilidades de skills cambiadas (ui-design-system añadida, angular-architecture eliminada)
+- qa-validator: modelo cambiado a ollama/model-agent-base (antes ollama/model-agent-base, sin cambios reales)
+- qa-validator prompt: simplificado, eliminadas referencias a Context7
+- decomposer prompt: ahora usa skills angular-patterns + node-setup en lugar de project-exploration + task-decomposition
+- Provider: modelos sin cambios significativos
+
+CAMBIOS EN AGENTS.md:
+- Eliminadas referencias a Context7
+- Eliminada sección "Context7 MCP"
+- Simplificado: eliminadas secciones de "Arquitectura" detallada, "Post-Scaffolding Validation" larga
+- Skills: solo 3 skills (angular-patterns, node-setup, ui-design-system) vs 8 antes
+- Añadida Regla 9: code-writer PUEDE ejecutar build/test
+- Añadida Regla 12: No reescribir archivo más de 2 veces
+- Formato markdown simplificado
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/
+
+==================================================
+OBSERVACIÓN DE REINICIO (añadida en revisión)
+==================================================
+Esta carpeta representa un REINICIO desde la config-31.
+
+CONTEXTO:
+  La config-31 (puntos-control-build) mantenía 5 agentes y 8 skills,
+  incluyendo Context7 MCP y opencode-mem como plugins externos.
+
+SÍNTOMAS DE SATURACIÓN OBSERVADOS EN CONFIG-31:
+  - Context7 MCP no mostraba mejora apreciable: probablemente su
+    documentación de Angular 21 aún no estaba actualizada en ese momento.
+  - opencode-mem añadía complejidad sin beneficio claro para el flujo
+    de trabajo.
+  - Las skills project-exploration y task-decomposition en decomposer
+    se solapaban con las capacidades del prompt del agente.
+  - build-scaffolding como skill separada añadía carga cognitiva innecesaria
+    al orquestador.
+  - 8 skills seguían siendo muchas para los subagentes locales: algunos
+    agentes comenzaban a ignorar skills secundarias.
+
+DECISIÓN DE REINICIO:
+  Se redujo de 8 a 3 skills esenciales: angular-patterns, node-setup,
+  ui-design-system. Se eliminaron Context7 y opencode-mem por falta de
+  impacto medible. Se fusionaron responsabilidades: decomposer ahora
+  usa angular-patterns + node-setup en lugar de skills especializadas
+  de exploración/descomposición. code-writer recuperó la capacidad de
+  ejecutar build/test (antes prohibido en config-31).
+
+LECCIÓN DOCUMENTADA:
+  "Es mejor hacer una skill para que un agente existente asuma una nueva
+  responsabilidad que crear un agente especializado, mientras el contexto
+  lo soporte." La config-32 llevó esta lección al extremo: skills
+  redundantes o de bajo impacto se eliminaron, y las responsabilidades
+  se consolidaron en los agentes existentes con prompts más precisos.
+  Este patrón de "menos es más" se mantuvo hasta la configuración final.

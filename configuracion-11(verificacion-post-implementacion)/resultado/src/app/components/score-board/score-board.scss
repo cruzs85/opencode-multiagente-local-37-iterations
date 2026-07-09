@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  padding: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.score-board {
+  display: flex;
+  gap: 2rem;
+  font-family: 'Courier New', monospace;
+
+  &__item {
+    text-align: right;
+
+    &--high {
+      .score-board__label {
+        color: #ffd700;
+      }
+      .score-board__value {
+        color: #ffd700;
+      }
+    }
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+  }
+
+  &__value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #535353;
+    font-variant-numeric: tabular-nums;
+  }
+}

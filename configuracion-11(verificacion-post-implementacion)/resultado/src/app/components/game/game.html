@@ -1,0 +1,18 @@
+<div class="game-container">
+  <canvas id="game-canvas" class="game-container__canvas"></canvas>
+  
+  @if (gameState().status === GameStatus.Playing || gameState().status === GameStatus.GameOver) {
+    <app-score-board 
+      [score]="gameState().score" 
+      [highScore]="gameState().highScore" 
+    />
+  }
+  
+  @if (gameState().status === GameStatus.GameOver) {
+    <div class="game-container__restart-overlay">
+      <button class="game-container__restart-btn" (click)="restart()">
+        Jugar de nuevo
+      </button>
+    </div>
+  }
+</div>

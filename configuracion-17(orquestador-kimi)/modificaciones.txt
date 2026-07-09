@@ -1,0 +1,82 @@
+================================================================================
+MODIFICACIONES: configuracion-17
+Comparación con: configuracion-16
+================================================================================
+
+Origen: uno/dino-runner12/ (Dinosaur Runner, Angular, 1 config)
+AGENTS.md: PRESENTE (con ORQUESTADOR CAMBIADO a opencode-go/kimi-k2.6)
+.opencode/skills/: skills activas (mismas que config-16 + nuevas)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (único)
+
+CAMBIO DE PARADIGMA:
+  config-16: orquestador con opencode/big-pickle, flujo ui-designer → code-writer → verifier → qa-validator.
+  config-17: CAMBIO DE ORQUESTADOR. Ahora opencode-go/kimi-k2.6 (modelo Kimi K2.6).
+             Prompt del orquestador COMPLETAMENTE RENOVADO: nuevo formato con
+             árbol de decisiones (PASO A/B/C), skills obligatorias reorganizadas,
+             flujo de decisión Q1/Q2 para UI, NO carga ui-design-system.
+             code-writer: prompt RENOVADO con skills obligatorias específicas
+             (anti-loop-protocol, json-safe-edit, delegation-protocol),
+             verificación wc -c post-escritura obligatoria.
+             qa-validator: delegation-protocol agregado a skills.
+             verifier: delegation-protocol agregado a skills.
+             analyst: prompt SIMPLIFICADO (referencia a analyst-protocol).
+             ui-designer: delegation-protocol agregado, formato estructurado.
+
+PROBLEMAS REFERIDOS:
+  1. Orquestador con big-pickle generaba prompts inconsistentes. Se migra a
+     opencode-go/kimi-k2.6 con mejor estructura de árbol de decisión.
+  2. code-writer: falta de verificación post-escritura. Se agrega wc -c obligatorio.
+     Skills ahora explícitas con allowlist (no skill.* allow).
+  3. Delegación: se estandariza delegation-protocol para todos los agentes que
+     delegan a code-writer (orquestador, verifier, ui-designer, qa-validator).
+  4. Flujo de decisión UI: Q1/Q2 explícito para determinar si delegar a ui-designer.
+  5. analyst: prompt demasiado verboso, se simplifica para usar analyst-protocol.
+  6. qa-validator: se agrega "NUNCA devuelvas resultado vacío — incluye stdout+stderr".
+
+AGENTES (cambios vs config-16):
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle → opencode-go/kimi-k2.6 (CAMBIO CRÍTICO)
+   - Prompt: COMPLETAMENTE RENOVADO. Árbol de decisiones PASO A/B/C.
+     Skills obligatorias: orchestrator-protocol, post-implementation, notifications,
+     partial-edit-protocol. Al delegar a code-writer: delegation-protocol.
+     NUNCA cargues ui-design-system.
+     Flujo Q1/Q2 para UI.
+   - Permisos: SIN fallback (no tiene clave "fallback").
+
+2. code-writer
+   - Modelo: ollama/qwen3-coder:30b (SIN CAMBIO)
+   - Prompt: RENOVADO. Skills allowlist explícita (anti-loop-protocol, json-safe-edit,
+     delegation-protocol). Verificación wc -c post-escritura OBLIGATORIA.
+     Para archivos críticos: node -e fs.writeFileSync con temp en /tmp/.
+   - Permisos: skills allowlist en vez de skill.* allow.
+
+3. qa-validator
+   - Prompt: delegation-protocol agregado a skills obligatorias.
+     REGLA CRÍTICA: "NUNCA devuelvas resultado vacío".
+   - Permisos: skills allowlist actualizada (delegation-protocol agregado).
+
+4. verifier
+   - Prompt: delegation-protocol agregado. "Al delegar a @code-writer, carga delegation-protocol".
+   - Permisos: skills allowlist actualizada (delegation-protocol agregado).
+
+5. analyst
+   - Prompt: SIMPLIFICADO. Referencia a analyst-protocol en lugar de instrucciones completas.
+   - Permisos: skills allowlist actualizada.
+
+6. ui-designer
+   - Prompt: delegation-protocol agregado. Al delegar a code-writer, cargar
+     delegation-protocol y usar formato estructurado (=== CONTENIDO DEL ARCHIVO ===).
+   - Permisos: skills allowlist actualizada (delegation-protocol agregado).
+
+PROVEEDORES: SIN CAMBIO vs config-16.
+
+SKILLS: SIN CAMBIO vs config-16.
+
+AGENTS.md: ACTUALIZADO. Orquestador ahora es opencode/Kimi-K2.6.
+  Diagrama de arquitectura sin cambios en roles.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

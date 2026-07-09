@@ -1,0 +1,11 @@
+@switch (gameState()) {
+  @case ('welcome') {
+    <app-welcome (startGame)="onStartGame()" />
+  }
+  @case ('playing') {
+    <app-game />
+  }
+  @case ('gameover') {
+    <app-game />
+  }
+}

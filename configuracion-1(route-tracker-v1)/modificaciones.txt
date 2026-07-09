@@ -1,0 +1,48 @@
+================================================================================
+MODIFICACIONES: configuracion-1(route-tracker-v1)
+================================================================================
+
+Origen: route-tracker/opencode-V1.json (renombrado a opencode.json)
+Incluye: AGENTS.md + .opencode/skills/ + resultado/ (proyecto Angular completo)
+
+CONFIGURACIÓN INICIAL - No hay comparación con carpetas anteriores.
+
+Esta es la primera configuración. Establece la línea base del proyecto
+RouteTracker. Resume del estado inicial:
+
+AGENTES:
+  - build: orquestador con modelo zai-coding-plan/glm-4.7, prompt con reglas
+    de exploración (@explorer obligatorio) y manejo de fallos.
+  - decomposer: zai-coding-plan/glm-4.7, temperatura 0.1, prompt detallado
+    con 5 pasos (incluye mapa de dependencias con @explorer).
+  - explorer: openrouter/xiaomi/mimo-v2-flash, solo-lectura.
+  - researcher: ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M, con skill
+    osrm-integration.
+  - code-writer: openrouter/deepseek/deepseek-v3.2, temperatura 0.
+  - qa-validator: openrouter/deepseek/deepseek-v3.2, con pasos de validación
+    Leaflet y reglas de escalado (3 iteraciones, Root Cause Analysis).
+  - package-manager: zai-coding-plan/glm-4.5-air.
+  - e2e-validator: openrouter/qwen/qwen3-coder-next, solo Playwright.
+  - unit-tester: openrouter/deepseek/deepseek-v3.2.
+
+PROVEEDORES:
+  - copilot (GitHub Copilot)
+  - ollama (local, 6 modelos)
+  - zai-coding-plan (Z.AI)
+  - openrouter (5 modelos, API key REAL expuesta: sk-or-v1-XXXXX...)
+
+SKILLS: angular-architecture, angular-packages, angular-patterns,
+         e2e-protocol (vacío), osrm-integration, qa-protocol,
+         task-decomposition.
+
+AGENTS.md: Documenta proyecto Angular 21 con standalone components,
+            signals, Vitest como test runner.
+
+RESULTADO: Proyecto Angular completo (src/, package.json, angular.json, etc.)
+            con configuración para RouteTracker.
+
+NOTA: El archivo opencode-V1.json original contiene un error de sintaxis JSON:
+      la clave "provider" aparece duplicada (línea 166 y línea 198). La segunda
+      aparición (zai-coding-plan + openrouter) sobrescribe a la primera
+      (copilot + ollama). En esta copia se mantiene el contenido original.
+================================================================================

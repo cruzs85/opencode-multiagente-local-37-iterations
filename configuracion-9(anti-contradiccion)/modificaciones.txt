@@ -1,0 +1,109 @@
+================================================================================
+MODIFICACIONES: configuracion-9(anti-contradiccion)
+Comparación con: configuracion-8
+================================================================================
+
+Origen: uno/dino-runner4/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (con regla anti-contradicción y orchestrator-protocol)
+.opencode/skills/: 8 skills activas (sin orchestrator-protocol)
+resultado/: Proyecto Angular (src/, package.json, angular.json)
+CONFIGS: opencode.json + opencode.standar.json (2 configs)
+
+CAMBIO DE PARADIGMA:
+  config-8 y config-9: AMBAS 100% local (Ollama), mismos modelos
+  (qwen3-coder:30b, qwen3:8b, qwen3:32b). Skills con ruta relativa.
+  CONFIG-9 INTRODUCE: regla anti-contradicción en el orquestador,
+  angular-scaffolding en package-manager, opciones de modelo más
+  detalladas (num_ctx, temperature, top_p, top_k, repeat_penalty).
+  Además incluye opencode.standar.json como alternativa más limpia.
+
+PROBLEMAS REFERIDOS:
+  1. El orquestador daba instrucciones contradictorias a los subagentes
+     porque no conocía sus prompts internos. Se agrega REGLA
+     ANTI-CONTRADICCIÓN: leer prompt del subagente antes de instruir.
+  2. code-writer usaba 'edit' también para archivos completos causando
+     contenido parcial. Se explicita que para archivos completos use
+     bash con heredoc; edit solo para cambios parciales.
+  3. package-manager no cargaba angular-scaffolding skill (no existía
+     en config-8). Se agrega explícitamente.
+  4. code-writer no tenía permiso explícito 'skill: { "*": "allow" }'
+     en su permission. Se agrega.
+  5. No se conservaba funcionalidad existente al corregir errores.
+     Se agrega "NUNCA elimines funcionalidad existente" en code-writer.
+  6. No había verificación post-escritura de archivos en code-writer.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: SE AGREGA "Carga siempre la Skill 'orchestrator-protocol'"
+     + REGLA ANTI-CONTRADICCIÓN + "NO uses 'read' para verificar código"
+     + "DELEGACIÓN POR LOTE" (múltiples tool calls en paralelo)
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b (igual)
+   - Prompt: idéntico a config-8
+
+3. explorer
+   - Modelo: ollama/qwen3:8b-q4_K_M → ollama/qwen3-coder:30b (CAMBIO)
+   - Fallback: ollama/qwen3-coder:30b → ollama/qwen3:32b
+   - Prompt: idéntico
+
+4. researcher
+   - Modelo: ollama/qwen3:8b-q4_K_M → ollama/qwen3-coder:30b (CAMBIO)
+   - Fallback: ollama/qwen3-coder:30b → ollama/qwen3:32b
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGA "REGLA ÚNICA DE HERRAMIENTAS: para crear o
+     sobreescribir un archivo completo usa bash con heredoc"
+   - SE AGREGA "NUNCA uses edit para reemplazar contenido completo"
+   - SE AGREGA "NUNCA elimines funcionalidad existente"
+   - Permisos: SE AGREGA "skill": { "*": "allow" }
+
+6. qa-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico a config-8
+
+7. package-manager
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: SE AGREGA angular-scaffolding en skills a cargar
+   - Permisos: SE AGREGAN mkdir *, cp *, mv *, rm *, cat *
+     (mismos que config-8)
+
+8. e2e-validator
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico a config-8
+
+9. unit-tester
+   - Modelo: ollama/qwen3-coder:30b (igual)
+   - Prompt: idéntico a config-8
+
+PROVEEDORES:
+  1. ollama: MISMOS modelos. SE AGREGAN opciones detalladas:
+     - qwen3-coder:30b: num_ctx:32768, temperature:0.0, top_p:0.8,
+       top_k:20, repeat_penalty:1.05
+     - qwen3:8b-q4_K_M: num_ctx:16384, temperature:0.1, top_p:0.8,
+       top_k:20, repeat_penalty:1.05
+     - qwen3:32b: num_ctx:40960, temperature:0.1, top_p:0.95,
+       top_k:20, repeat_penalty:1.0
+
+SKILLS:
+  MISMA LISTA que config-8.
+  SIN orchestrator-protocol en skills/ a pesar de que el build prompt
+  referencia "orchestrator-protocol" (esto es un problema: la skill
+  no existe en el directorio .opencode/skills/).
+  angular-scaffolding referenciada en package-manager pero no existe
+  como skill (mismo problema potencial).
+
+AGENTS.md: PRESENTE. Actualizado con regla anti-contradicción,
+  orchestrator-protocol documentado en tabla de skills.
+
+opencode.standar.json: CONFIG ALTERNATIVA más limpia. Diferencias:
+  - Mismos agentes con prompts ligeramente más genéricos
+  - qa-validator sin angular-architecture en skills requeridas
+  - package-manager con prompt más genérico
+  - researcher con prompt más genérico
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

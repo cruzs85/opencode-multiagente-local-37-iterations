@@ -1,0 +1,15 @@
+@if (gameState() === 'gameOver') {
+  <div class="game-over-overlay">
+    <div class="game-over-card">
+      <h2 class="game-over-title">GAME OVER</h2>
+      <p class="final-score">SCORE: {{ finalScore() }}</p>
+      @if (isNewRecord()) {
+        <p class="record">NUEVO RÉCORD!</p>
+      }
+      <div class="button-container">
+        <button class="retry-button" (click)="retryGame()">REINTENTAR</button>
+        <button class="menu-button" (click)="goToMenu()">MENÚ</button>
+      </div>
+    </div>
+  </div>
+}

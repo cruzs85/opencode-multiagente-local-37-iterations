@@ -1,0 +1,12 @@
+<div class="game-container">
+  <canvas 
+    #gameCanvas 
+    width="800" 
+    height="400"
+    [attr.data-game-state]="gameService.gameState()"
+    [attr.data-score]="gameService.score()"
+    [attr.data-dino-y]="gameService.dinoY()"
+    [attr.data-jump-count]="gameService.dinoJumpCount()"
+    [attr.data-obstacle-count]="gameService.obstacles().length">
+  </canvas>
+</div>

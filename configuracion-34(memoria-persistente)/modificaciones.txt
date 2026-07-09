@@ -1,0 +1,28 @@
+MODIFICACIONES: configuracion-33 → configuracion-34
+==================================================
+Fuente: dino-runner25 | Comparado con: dino-runner24
+
+CAMBIOS EN opencode.json:
+- Añadido plugin "opencode-mem" (memoria persistente)
+- Añadido MCP Context7 (restaurado, aunque en config-32 se eliminó por no mostrar diferencia; se reintentó junto con opencode-mem para reforzar el contexto sobre Angular 21)
+- Build prompt: añadida sección MEMORIA PERSISTENTE (memory() tool nativa)
+- code-writer: checklist Angular movido a sección separada con checkboxes
+- code-writer: añadido énfasis en @Injectable({ providedIn: 'root' })
+- qa-validator: prompt expandido con 15 reglas críticas detalladas
+  - Toolcall #1: cargar angular-patterns obligatorio
+  - Reglas sobre localStorage, Jasmine, signals, routerLink, overrideProvider, etc.
+  - Límite de 15 toolcalls totales
+- qa-validator: añadidos permisos mkdir, rm, touch, mv
+- build: añadido memory() search en build prompt
+
+CAMBIOS EN AGENTS.md:
+- Añadida sección "Memoria Persistente (opencode-mem)"
+  - opencode-mem plugin, memory() tool, chatMessage, Web UI
+  - Detalles de captura automática de contexto
+- Reglas y estructura del proyecto sin cambios significativos
+- Skills tabla sin cambios
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/
+- test-results/ en fuente excluido de resultado/

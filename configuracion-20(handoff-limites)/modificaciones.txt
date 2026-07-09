@@ -1,0 +1,39 @@
+================================================================================
+MODIFICACIONES: configuracion-20
+Comparación con: configuracion-19
+================================================================================
+
+Origen: uno/dino-runner14/old 2/ (solo config: opencode.json, AGENTS.md, .opencode/)
+AGENTS.md: PRESENTE (mismo contenido que config-19 — 232 líneas)
+AGENTS.md DIFERENCIAS: SIN sección "Modelos model-* en Ollama" (presente en config-21 pero no en config-19/20).
+.opencode/skills/: skills activas (mismas que config-19)
+.opencode/models/: subdirectorio con modelos
+resultado/: NO (solo archivos de configuración)
+CONFIGS: opencode.json (único)
+
+CAMBIO DE PARADIGMA:
+  config-19: handoff JSON system, modelos dedicados, verifier independiente.
+  config-20: CASI IDÉNTICO a config-19. Misma arquitectura de handoff JSON,
+             mismos modelos dedicados, mismas skills.
+             DIFERENCIAS MÍNIMAS:
+             - qa-validator: MAX 5 toolcalls (vs 10 en config-19/21).
+             - verifier: MAX 3 toolcalls (vs 6 en config-19/21).
+             - .opencode/skills: posiblemente diferencias en contenido interno.
+             - AGENTS.md: mismas 232 líneas pero SIN sección de modelos model-*.
+             Esta es una copia de seguridad intermedia (backup2).
+
+PROBLEMAS REFERIDOS:
+  1. Límites de toolcalls ajustados: qa-validator 5 (vs 10), verifier 3 (vs 6).
+     Posiblemente para evitar consumo excesivo de recursos.
+  2. Esta es una versión de respaldo (backup2) con ajustes menores de límites.
+
+AGENTES: MISMOS que config-19 con diferencias en toolcalls.
+
+PROVEEDORES: MISMOS que config-19.
+
+SKILLS: MISMAS que config-19.
+
+AGENTS.md: SIN CAMBIO SUSTANCIAL vs config-19.
+
+RESULTADO: NO (solo archivos de configuración — backup de configuración).
+================================================================================

@@ -1,0 +1,12 @@
+@if (gameService.status() === 'game-over') {
+  <div class="game-over-overlay">
+    <div class="game-over-content">
+      <h1>GAME OVER</h1>
+      <div class="score">
+        <p>Puntuación: {{ gameService.score() }}</p>
+        <p>Récord: {{ gameService.highScore() }}</p>
+      </div>
+      <button class="restart-button" (click)="restartGame()">REINICIAR</button>
+    </div>
+  </div>
+}

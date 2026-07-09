@@ -1,0 +1,7 @@
+@if (screen() === 'welcome') {
+  <app-welcome (startGame)="startGame()" />
+} @else if (screen() === 'game') {
+  <app-game (gameOver)="endGame($event)" />
+} @else {
+  <app-game-over [score]="score()" (retry)="retry()" (menu)="backToMenu()" />
+}

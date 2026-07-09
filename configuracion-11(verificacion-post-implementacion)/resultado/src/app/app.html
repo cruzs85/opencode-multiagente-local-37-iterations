@@ -1,0 +1,7 @@
+@if (gameState().status === GameStatus.Welcome) {
+  <app-welcome-screen (startGame)="onStartGame()" />
+}
+
+@if (gameState().status === GameStatus.Playing || gameState().status === GameStatus.GameOver) {
+  <app-game />
+}

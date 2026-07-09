@@ -1,0 +1,117 @@
+================================================================================
+MODIFICACIONES: configuracion-5(proveedores-hibridos)
+Comparación con: configuracion-4(local-ollama)
+================================================================================
+
+Origen: uno/Prueba1/ (Dinosaur Runner, Angular 21)
+AGENTS.md: NUEVO (AGENTS.md extenso con 315 líneas, patrones Angular, signals, reglas detalladas)
+.opencode/skills/: 8 skills activas + olds/ (sin orchestrator-protocol, contract-verification, angular-scaffolding)
+resultado/: Proyecto Angular 21.2.0 con juego Dinosaur Runner (src/, package.json, angular.json)
+
+CAMBIO DE PARADIGMA:
+  configuracion-4: 100% local (Ollama), 2 modelos (qwen3-coder:30b, qwen3:32b),
+                   orquestador big-pickle, 12 skills.
+  configuracion-5: Híbrido (OpenRouter + Ollama + zai-coding-plan), 3 proveedores,
+                   6+ modelos, orquestador big-pickle con fallback OpenRouter.
+
+PROBLEMAS REFERIDOS:
+  1. Los modelos locales qwen3-coder:30b no estaban disponibles o rendían
+     insuficientemente, requiriendo proveedores externos de respaldo.
+  2. La ausencia de orchestrator-protocol y contract-verification causaba
+     contradicciones del orquestador y errores de tipos entre archivos
+     dependientes (problemas heredados de configuracion-4).
+  3. opencode.json usaba rutas absolutas a skills (Prueba1/.opencode/skills)
+     en lugar de relativas, lo que impedía portabilidad.
+  4. code-writer usaba exclusivamente 'edit' para todo, sin bash+heredoc
+     para archivos completos, causando truncamientos.
+  5. La API key de OpenRouter estaba expuesta en el JSON (sk-or-v1-XXXXXX).
+  6. No existía la skill angular-scaffolding para scaffolding Angular.
+  7. El explorador no tenía límite de reintentos en búsquedas sin resultados.
+  8. No había regla anti-contradicción para el orquestador, que podía
+     exigir herramientas que los subagentes no tenían configuradas.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: reescrito con REGLA SUPREMA + FLUJO ESTÁNDAR + REGLA E2E
+     + REGLA EXPLORACIÓN + REGLA EFICIENCIA
+   - Se agregó REGLA ANTI-LOOP GENERAL para detectar bucles en subagentes
+   - Fallback: openrouter/xiaomi/mimo-v2-pro (antes no tenía)
+
+2. decomposer
+   - Modelo: ollama/qwen3:32b → opencode/big-pickle
+   - Fallback: opencode/big-pickle → openrouter/deepseek/deepseek-v3.2
+   - Prompt simplificado: "plan estructurado, consulta AGENTS.md"
+   - SIN restricción absoluta de no escribir código (sí la tenía config-4)
+
+3. explorer
+   - Modelo: ollama/qwen3-coder:30b → openrouter/xiaomi/mimo-v2-flash
+   - Fallback: ollama/qwen3:32b → (sin fallback)
+   - Prompt: se agregaron límites anti-loop y regla de máx 2 intentos
+   - Permisos: sin fallback definido (config-4 tenía qwen3:32b)
+
+4. researcher
+   - Modelo: ollama/qwen3-coder:30b → ollama/deepseek-coder-v2:16b-lite
+   - Fallback: ollama/qwen3:32b → openrouter/xiaomi/mimo-v2-flash
+   - Prompt: mismo, carga skill osrm-integration
+
+5. code-writer
+   - Modelo: ollama/qwen3-coder:30b → openrouter/deepseek/deepseek-v3.2
+   - Fallback: ollama/qwen3:32b → opencode/big-pickle
+   - Prompt: CAMBIO RADICAL — usa EXCLUSIVAMENTE 'edit' (no bash+heredoc)
+   - SIN skill contract-verification (config-4 sí la cargaba)
+
+6. qa-validator
+   - Modelo: ollama/qwen3-coder:30b → openrouter/deepseek/deepseek-v3.2
+   - Fallback: ollama/qwen3:32b → ollama/qwen3:30b-a3b
+   - Prompt: sin paso 2b para errores 'Property does not exist', sin
+     angular-architecture en skills requeridas (sí las tenía config-4)
+
+7. package-manager
+   - Modelo: ollama/qwen3-coder:30b → zai-coding-plan/glm-4.5-air
+   - Fallback: ollama/qwen3:32b → zai-coding-plan/glm-4.7
+   - Permisos bash más restrictivos: solo npm install, npm ci, ng add, ng generate
+   - SIN angular-scaffolding skill (config-4 sí la tenía)
+
+8. e2e-validator
+   - Modelo: ollama/qwen3-coder:30b → openrouter/qwen/qwen3-coder-next
+   - Fallback: ollama/qwen3:32b → ollama/qwen3:30b-a3b
+   - Prompt: mismo, sin cambios significativos
+
+9. unit-tester
+   - Modelo: ollama/qwen3-coder:30b → openrouter/deepseek/deepseek-v3.2
+   - Fallback: ollama/qwen3:32b → openrouter/qwen/qwen3-coder-next
+
+PROVEEDORES:
+
+1. ollama: CONSERVADO. Modelos locales: qwen2.5-coder:14b, qwen3:30b-a3b,
+   qwen-32k:latest, llama3.1:8b, gemma3:4b, deepseek-coder-v2:16b (más variados
+   que config-4 que solo tenía qwen3-coder:30b y qwen3:32b)
+2. openrouter: NUEVO (eliminado en config-4). Proveedor principal con modelos:
+   minimax/m2.5-lightning, deepseek/deepseek-v3.2, xiaomi/mimo-v2-pro,
+   xiaomi/mimo-v2-flash, qwen/qwen3-coder-next
+3. zai-coding-plan: NUEVO (eliminado en config-4). Usado para package-manager
+   y fallbacks.
+4. copilot: NO presente (eliminado desde config-4)
+5. Sección "skills.paths": Ruta ABSOLUTA (/mnt/.../Prueba1/.opencode/skills)
+   en lugar de relativa (./.opencode/skills como en config-4)
+
+SKILLS:
+  CONSERVADAS (de Prueba1): angular-architecture, angular-packages,
+    angular-patterns, anti-loop-protocol, e2e-protocol, explorer-protocol,
+    qa-protocol, task-decomposition, olds/.
+  ELIMINADAS (vs config-4): orchestrator-protocol, contract-verification,
+    angular-scaffolding.
+  AGREGADAS: Ninguna respecto a Prueba1 (hereda su set original de 8 skills).
+
+AGENTS.md: NUEVO. Mucho más extenso que config-4 (315 vs 136 líneas aprox):
+  - Incluye descripción de la aplicación (Dinosaur Runner, Angular 21, Signals)
+  - Patrones de código (Standalone Components, Signals, Effects, Inyección)
+  - Criterios de validación detallados
+  - Reglas adicionales: REGLA SUPREMA, REGLA E2E, REGLA EXPLORACIÓN,
+    REGLA FALLOS, REGLA QA SELECTIVO, REGLA BUILD, REGLA E2E TERMINAL,
+    REGLA DE TERMINACIÓN TEMPRANA
+
+RESULTADO: Proyecto Angular 21.2.0 (Dinosaur Runner) incluido.
+================================================================================

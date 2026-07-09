@@ -1,0 +1,44 @@
+================================================================================
+MODIFICACIONES: configuracion-15
+Comparación con: configuracion-14(multi-agente)
+================================================================================
+
+Origen: uno/dino-runner10(optimo)/ (Dinosaur Runner, Angular, 1 config)
+AGENTS.md: PRESENTE (misma estructura que config-14)
+.opencode/skills/: skills activas (mismas skills que config-14)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (único, SIN nueva-config.json)
+
+CAMBIO DE PARADIGMA:
+  config-14: 9 agentes especializados, orquestador con opencode/big-pickle.
+  config-15: 9 agentes especializados, orquestador CONTINÚA con opencode/big-pickle.
+             SIN cambios mayores en arquitectura vs config-14.
+             Prompt del code-writer MEJORADO con reglas anti-bucle más estrictas
+             (output limitado, verificación post-escritura, detección de contenido repetido).
+             Prompt del e2e-validator MEJORADO con regla de limpieza de puerto 4200.
+             Permisos del e2e-validator ampliados (lsof, kill, xargs).
+             Se elimina nueva-config.json (presente en config-14).
+             Esta config se llama "(optimo)" indicando versión refinada/optimizada.
+
+PROBLEMAS REFERIDOS:
+  1. Bucles en code-writer: se refuerza anti-bucle con verificación de historial,
+     límite de 5 toolcalls, verificación wc -c post-escritura, detección de
+     contenido repetido (>500 chars idénticos).
+  2. Limpieza de puerto 4200 en E2E: se agrega regla obligatoria para matar
+     procesos en puerto 4200 al finalizar Playwright (lsof -ti:4200 | xargs kill -9).
+  3. Optimización general de prompts: versiones más refinadas con menos
+     ambigüedad.
+
+AGENTES: SIN CAMBIO en estructura vs config-14 (mismos 10 agentes).
+
+PROVEEDORES:
+  1. ollama: MISMOS 2 modelos (qwen3-coder:30b, qwen3:32b). Mismas opciones.
+  2. plugin: ["opencode-link", "@sillybit/opencode-plugin-everynotify"] (IGUAL)
+
+SKILLS: SIN CAMBIO vs config-14.
+
+AGENTS.md: PRESENTE. Mismo contenido que config-14.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

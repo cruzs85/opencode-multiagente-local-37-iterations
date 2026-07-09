@@ -1,0 +1,126 @@
+.gameover-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.gameover-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  background: var(--surface-card);
+  border: 2px solid var(--neon-red);
+  border-radius: 8px;
+  box-shadow: 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
+}
+
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2rem;
+  color: var(--neon-red);
+  text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
+  margin-bottom: var(--space-xl);
+  animation: pulse 1.5s infinite;
+}
+
+.score-section {
+  display: flex;
+  align-items: baseline;
+  margin: var(--space-sm) 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.label {
+  color: var(--text-muted);
+  margin-right: var(--space-md);
+  font-size: 0.9rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+}
+
+.value {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.2rem;
+}
+
+.score-value {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.best-value {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.new-record {
+  color: var(--neon-green);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  margin-left: var(--space-md);
+  animation: flicker 1s infinite;
+  text-shadow: 0 0 5px var(--neon-green);
+}
+
+.neon-button {
+  padding: var(--space-md) var(--space-xl);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  background: var(--surface-button);
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: var(--space-sm) 0;
+  text-transform: uppercase;
+}
+
+.neon-button.retry {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+}
+
+.neon-button.retry:hover {
+  background: var(--surface-button-hover);
+  box-shadow: 0 0 20px var(--neon-green), 0 0 40px var(--neon-green);
+}
+
+.neon-button.menu {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.neon-button.menu:hover {
+  background: var(--surface-button-hover);
+  box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.2rem;
+  }
+  .gameover-container {
+    padding: var(--space-lg);
+  }
+}

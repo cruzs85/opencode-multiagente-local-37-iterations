@@ -1,0 +1,16 @@
+# OpenCode
+.opencode/node_modules/
+
+# Resultados de build
+configuracion-*/resultado/node_modules/
+configuracion-*/resultado/dist/
+configuracion-*/resultado/.angular/
+configuracion-*/resultado/coverage/
+configuracion-*/resultado/playwright-report/
+configuracion-*/resultado/test-results/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

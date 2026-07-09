@@ -1,0 +1,14 @@
+@switch (gameState()) {
+  @case ('idle') {
+    <app-welcome />
+  }
+  @case ('playing') {
+    <app-game (gameOver)="handleGameOver()" />
+  }
+  @case ('gameOver') {
+    <app-game-over (retry)="handleRetry()" (menu)="handleMenu()" />
+  }
+  @default {
+    <app-welcome />
+  }
+}

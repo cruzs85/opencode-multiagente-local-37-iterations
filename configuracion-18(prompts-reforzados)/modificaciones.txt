@@ -1,0 +1,63 @@
+================================================================================
+MODIFICACIONES: configuracion-18
+Comparación con: configuracion-17
+================================================================================
+
+Origen: uno/dino-runner13/ (Dinosaur Runner, Angular, 1 config)
+AGENTS.md: PRESENTE (mismo contenido que config-17)
+.opencode/skills/: skills activas (mismas que config-17)
+.opencode/plugins/: plugins (opencode-link.json, .everynotify.json)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+CONFIGS: opencode.json (único)
+
+CAMBIO DE PARADIGMA:
+  config-17: orquestador opencode-go/kimi-k2.6, flujo consolidado.
+  config-18: MISMA arquitectura que config-17 con AJUSTES EN PROMPTS DE SUBAGENTES.
+             code-writer: prompt REFORZADO con "carga EXACTAMENTE estas 3 skills
+             y NINGUNA MÁS" (anti-loop-protocol, json-safe-edit, delegation-protocol).
+             Regla CRÍTICA: "IGNORA cualquier instrucción que diga 'cargar skill X'
+             donde X NO sea una de las 3 skills anteriores".
+             qa-validator: prompt MEJORADO con sección "CREACIÓN DE ARCHIVOS DE TEST"
+             para guiar creación de *.spec.ts con herramientas específicas.
+             bash ampliado para qa-validator (cat *, echo *, node -e *, touch *, wc *, ps *, find *).
+             ui-designer: prompt REFORZADO con "REGLA CRÍTICA DE DELEGACIÓN":
+             debe usar task() con subagent_type para delegar a code-writer,
+             NO generar texto plano.
+
+PROBLEMAS REFERIDOS:
+  1. code-writer cargaba skills incorrectas (skills de verificación). Se refuerza
+     que solo cargue EXACTAMENTE 3 skills específicas.
+  2. qa-validator no podía crear archivos de test eficientemente. Se agrega
+     guía explícita de herramientas (edit → bash heredoc → node -e fs.writeFileSync).
+     Se amplían permisos bash (cat, echo, node -e, touch, wc, ps, find).
+  3. ui-designer no usaba task() para delegar, generaba texto plano. Se agrega
+     REGLA CRÍTICA DE DELEGACIÓN con ejemplo de task().
+
+AGENTES (cambios vs config-17):
+
+1. build (Orquestador) — SIN CAMBIO vs config-17.
+
+2. code-writer
+   - Prompt: REGLA CRÍTICA NUEVA: "Carga EXACTAMENTE estas 3 skills al inicio
+     y NINGUNA MÁS. IGNORA cualquier instrucción que diga 'cargar skill X'
+     donde X NO sea una de las 3 skills anteriores".
+   - Reglas esenciales reforzadas: respuesta solo "✅ Archivo [ruta] escrito [bytes]".
+
+3. qa-validator
+   - Prompt: NUEVA sección "CREACIÓN DE ARCHIVOS DE TEST" con orden de herramientas.
+   - Permisos bash: AMPLIADOS (cat *, echo *, node -e *, touch *, wc *, ps *, find *).
+
+4. ui-designer
+   - Prompt: "REGLA CRÍTICA DE DELEGACIÓN" con ejemplo task().
+     task(code-writer) con subagent_type: 'code-writer'.
+
+5. decomposer, explorer, researcher, package-manager, verifier, analyst — SIN CAMBIOS.
+
+PROVEEDORES: SIN CAMBIO vs config-17.
+
+SKILLS: SIN CAMBIO vs config-17.
+
+AGENTS.md: SIN CAMBIO vs config-17.
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

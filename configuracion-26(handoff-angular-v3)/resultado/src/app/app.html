@@ -1,0 +1,13 @@
+<div class="app-container">
+  @switch (screenState.screen()) {
+    @case (Screen.WELCOME) {
+      <app-welcome />
+    }
+    @case (Screen.GAME) {
+      <app-game />
+    }
+    @case (Screen.GAMEOVER) {
+      <app-gameover />
+    }
+  }
+</div>

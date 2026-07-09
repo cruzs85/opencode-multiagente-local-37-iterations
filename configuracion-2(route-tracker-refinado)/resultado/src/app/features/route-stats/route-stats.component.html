@@ -1,0 +1,17 @@
+<section class="route-stats">
+  <h2 class="route-stats__title">Estadísticas</h2>
+  <div class="route-stats__grid">
+    <article class="stat-card">
+      <div class="stat-card__value">{{ totalRoutes() }}</div>
+      <div class="stat-card__label">Rutas guardadas</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-card__value">{{ totalPoints() }}</div>
+      <div class="stat-card__label">Puntos totales</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-card__value">{{ totalDistanceMeters() | distance }}</div>
+      <div class="stat-card__label">Distancia total</div>
+    </article>
+  </div>
+</section>

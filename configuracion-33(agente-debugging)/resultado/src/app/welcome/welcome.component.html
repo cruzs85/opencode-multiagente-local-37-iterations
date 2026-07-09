@@ -1,0 +1,20 @@
+<div class="welcome-container">
+  <h1 class="welcome-title neon-glow-green">DINO RUNNER</h1>
+  <h2 class="welcome-subtitle">¡Salta los obstáculos y sobrevive!</h2>
+  
+  <div class="instructions">
+    <p>Presiona ESPACIO o clic para saltar</p>
+    <p>Doble salto: ¡puedes saltar 2 veces seguidas!</p>
+    <p>La velocidad aumenta con el tiempo</p>
+  </div>
+  
+  @if (highScore() > 0) {
+    <div class="high-score">
+      Récord: {{ highScore() }}
+    </div>
+  }
+  
+  <button class="start-button" [routerLink]="['/game']">
+    JUGAR
+  </button>
+</div>

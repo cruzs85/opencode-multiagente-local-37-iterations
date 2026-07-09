@@ -1,0 +1,9 @@
+<div class="game-over-screen" data-testid="game-over-screen">
+  <h1 class="title">GAME OVER</h1>
+  <div class="score">PUNTUACIÓN: <span class="score-value">{{ gameService.scoreSignal() }}</span></div>
+  <div class="high-score">RÉCORD: <span class="score-value">{{ gameService.highScoreSignal() }}</span></div>
+  @if (gameService.isNewRecordSignal()) { 
+    <div class="new-record" data-testid="new-record">¡NUEVO RÉCORD!</div> 
+  }
+  <button class="btn-restart" (click)="restartGame()" data-testid="restart-button">REINTENTAR</button>
+</div>

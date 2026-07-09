@@ -1,0 +1,15 @@
+.game-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-game); }
+.game-canvas { width: 100%; height: 100%; display: block; cursor: pointer; outline: none; }
+.hud { position: absolute; top: var(--space-md); right: var(--space-md); pointer-events: none;
+  .score { font-family: 'Press Start 2P', monospace; font-size: 1.2rem; color: var(--neon-yellow); text-shadow: 0 0 10px var(--neon-yellow); }
+}
+.game-over-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--surface-overlay); display: flex; align-items: center; justify-content: center; z-index: 10; }
+.game-over-content { text-align: center; font-family: 'Press Start 2P', monospace;
+  h2 { font-size: 2rem; color: var(--neon-red); text-shadow: 0 0 15px var(--neon-red); margin-bottom: var(--space-lg); }
+  p { font-size: 1rem; color: var(--text-primary); margin-bottom: var(--space-sm); }
+  .new-record { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); animation: pulse 1s infinite; }
+}
+.restart-button { margin-top: var(--space-xl); background-color: var(--surface-button); color: var(--text-primary); border: 2px solid var(--neon-cyan); padding: var(--space-md) var(--space-lg); font-size: 1rem; font-family: 'Press Start 2P', monospace; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 10px var(--neon-cyan);
+  &:hover { background-color: var(--surface-button-hover); box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 15px var(--neon-cyan); transform: translateY(-2px); }
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }

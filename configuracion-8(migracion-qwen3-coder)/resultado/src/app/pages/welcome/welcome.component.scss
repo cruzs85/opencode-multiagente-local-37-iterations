@@ -1,0 +1,72 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7f7;
+  font-family: 'Courier New', monospace;
+}
+
+.welcome {
+  text-align: center;
+  padding: 2rem;
+  
+  &__title {
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  &__subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  &__instructions {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    display: inline-block;
+    
+    li {
+      margin: 0.5rem 0;
+      color: #555;
+      list-style: none;
+      
+      &::before {
+        content: '🦕 ';
+      }
+    }
+  }
+  
+  &__high-score {
+    font-size: 1.5rem;
+    color: #FF6F00;
+    margin-bottom: 2rem;
+  }
+  
+  &__button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: transform 0.2s, background 0.2s;
+    
+    &:hover {
+      background: #388E3C;
+      transform: scale(1.05);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}

@@ -1,0 +1,60 @@
+<div class="game-container">
+  <div class="hud">
+    <div class="score-display">
+      <span class="score-label">SCORE</span>
+      <span class="score-value" data-testid="score">{{ score() }}</span>
+    </div>
+    <div class="high-score-display">
+      <span class="score-label">HI</span>
+      <span class="score-value" data-testid="high-score">{{ highScore() }}</span>
+    </div>
+    <div class="speed-display">
+      <span class="score-label">SPEED</span>
+      <span class="score-value" data-testid="speed">{{ speed() | number:'1.0-0' }}</span>
+    </div>
+  </div>
+
+  <div class="game-area" (click)="onGameAreaClick()" data-testid="game-area">
+    <div class="ground"></div>
+    
+    <div 
+      class="dino" 
+      [class.jumping]="isJumping()"
+      [style.bottom.px]="dinoY()"
+      data-testid="dino"
+    >
+      <div class="dino-body">
+        <div class="dino-eye"></div>
+      </div>
+      <div class="dino-leg-left"></div>
+      <div class="dino-leg-right"></div>
+    </div>
+
+    @for (obs of obstacles(); track obs.x + obs.width) {
+      <div 
+        class="obstacle"
+        [style.left.px]="obs.x"
+        [style.width.px]="obs.width"
+        [style.height.px]="obs.height"
+        [style.bottom.px]="0"
+        data-testid="obstacle"
+      ></div>
+    }
+
+    @if (gameState() === 'gameover') {
+      <div class="gameover-overlay" data-testid="gameover">
+        <h2 class="gameover-title">GAME OVER</h2>
+        <p class="gameover-score">Score: {{ score() }}</p>
+        <p class="gameover-high">Best: {{ highScore() }}</p>
+        <div class="gameover-buttons">
+          <button class="restart-button" (click)="onRestart()" data-testid="restart-button">↻ Reintentar</button>
+          <button class="menu-button" (click)="onBackToWelcome()" data-testid="menu-button">☰ Menú</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="controls-hint">
+    <span>SPACE / CLICK para saltar • Doble salto permitido</span>
+  </div>
+</div>

@@ -1,0 +1,187 @@
+// Dark Neon Design System
+// Global styles for Dino Runner
+
+// Variables
+:root {
+  // Backgrounds
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #14141f;
+  --bg-tertiary: #1a1a2e;
+  --bg-game: #07070b;
+
+  // Text
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+
+  // Neon Accents
+  --neon-cyan: #00f0ff;
+  --neon-magenta: #ff00aa;
+  --neon-green: #39ff14;
+  --neon-red: #ff1744;
+  --neon-yellow: #ffe600;
+  --neon-purple: #bb00ff;
+
+  // Surfaces
+  --surface-button: #1e1e32;
+  --surface-button-hover: #2a2a45;
+  --surface-overlay: #0d0d16e0;
+}
+
+// Font imports (moved from here to index.html)
+// Importing fonts via index.html instead of SCSS to avoid CSS budget issues
+
+// Reset and base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+// Game elements
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-game);
+  overflow: hidden;
+}
+
+.game-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+// Menu elements
+.menu-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  padding: 1rem;
+}
+
+.menu-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 7px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 21px var(--neon-cyan);
+  animation: neon-flicker 1.5s infinite alternate;
+}
+
+// Buttons
+.btn {
+  background-color: var(--surface-button);
+  color: var(--text-primary);
+  border: 1px solid var(--neon-cyan);
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+}
+
+.btn:hover {
+  background-color: var(--surface-button-hover);
+  box-shadow: 0 0 15px var(--neon-cyan);
+  transform: translateY(-2px);
+}
+
+// HUD elements
+.hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.score-display {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.5rem;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 7px var(--neon-yellow), 0 0 10px var(--neon-yellow), 0 0 21px var(--neon-yellow);
+}
+
+// Game over screen
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--surface-overlay);
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid var(--neon-red);
+  box-shadow: 0 0 20px var(--neon-red);
+  z-index: 10;
+}
+
+.game-over-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2.5rem;
+  color: var(--neon-red);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 7px var(--neon-red), 0 0 10px var(--neon-red), 0 0 21px var(--neon-red);
+}
+
+// Neon effects
+.neon-glow-cyan {
+  text-shadow: 0 0 7px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 21px var(--neon-cyan);
+}
+
+.neon-glow-green {
+  text-shadow: 0 0 7px var(--neon-green), 0 0 10px var(--neon-green), 0 0 21px var(--neon-green);
+}
+
+.neon-glow-red {
+  text-shadow: 0 0 7px var(--neon-red), 0 0 10px var(--neon-red), 0 0 21px var(--neon-red);
+}
+
+.neon-border-cyan {
+  box-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan)40, inset 0 0 5px var(--neon-cyan)20;
+  border: 1px solid var(--neon-cyan);
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.6; }
+}
+
+.neon-flicker {
+  animation: neon-flicker 1.5s infinite alternate;
+}
+
+// Animations
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}

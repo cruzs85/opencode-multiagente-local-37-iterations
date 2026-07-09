@@ -1,0 +1,18 @@
+<div class="gameover-overlay">
+  <div class="gameover-container">
+    <h1 class="title">GAME OVER</h1>
+    <div class="score-section">
+      <span class="label">SCORE</span>
+      <span class="value score-value">{{ score }}</span>
+    </div>
+    <div class="score-section">
+      <span class="label">BEST</span>
+      <span class="value best-value">{{ highScore }}</span>
+      @if (isNewRecord) {
+        <span class="new-record">NEW RECORD!</span>
+      }
+    </div>
+    <button class="neon-button retry" (click)="onRetry()">TRY AGAIN</button>
+    <button class="neon-button menu" (click)="onMenu()">MENU</button>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+================================================================================
+MODIFICACIONES: configuracion-7
+Comparación con: configuracion-6(todo-local)
+================================================================================
+
+Origen: uno/dino-runner2/ (Dinosaur Runner, Angular)
+AGENTS.md: PRESENTE (similar a config-6)
+.opencode/skills/: 8 skills activas (mismas que config-6)
+resultado/: Proyecto Angular (src/, package.json, angular.json, playwright.config.ts)
+
+CAMBIO DE PARADIGMA:
+  configuracion-6 y 7: AMBAS 100% local (Ollama), mismo proveedor,
+                       mismos modelos (devstral-small-2, qwen3:8b, qwen3:32b).
+  Diferencias principalmente en prompts y permisos de agentes.
+
+PROBLEMAS REFERIDOS:
+  1. code-writer en config-6 no leía archivos antes de editarlos ni
+     verificaba post-escritura, causando sobrescrituras incorrectas.
+  2. code-writer no cargaba contract-verification, causando errores de
+     tipo entre archivos dependientes.
+  3. qa-validator de config-6 no tenía el paso 2b para errores de
+     integración 'Property does not exist'. Se agrega explícitamente.
+  4. package-manager de config-6 no tenía npm --version y node --version
+     permitidos (se agregan en config-7).
+  5. El orquestador de config-6 no tenía restricción de no diseñar bloques
+     de código al pasar instrucciones. Se agrega en config-7.
+
+AGENTES:
+
+1. build (Orquestador)
+   - Modelo: opencode/big-pickle (igual)
+   - Prompt: SE AGREGA "NUNCA diseñes ni incluyas bloques de código"
+     y "Solo indica: archivo destino, qué estructura crear..."
+   - Mismo fallback
+
+2. decomposer
+   - Modelo: opencode/big-pickle → ollama/qwen3:32b (CAMBIO: ahora usa
+     qwen3:32b en lugar de big-pickle)
+   - Fallback: opencode/big-pickle (igual)
+   - Prompt: SE AGREGA "Carga SIEMPRE la skill 'task-decomposition'" y
+     "RESTRICCIÓN ABSOLUTA: NUNCA escribas código"
+
+3. explorer
+   - Modelo: ollama/qwen3:8b-q4_K_M (igual)
+   - Prompt: idéntico a config-6
+
+4. researcher
+   - Modelo: ollama/qwen3:8b-q4_K_M (igual)
+   - Prompt: idéntico a config-6
+
+5. code-writer
+   - Modelo: ollama/devstral-small-2:latest (igual)
+   - Prompt: SE AGREGA "ANTES de escribir cualquier archivo, lee el
+     archivo existente" y "DESPUÉS de escribir, vuelve a leer para
+     confirmar" y "Carga la skill 'contract-verification' antes de
+     implementar cualquier archivo que llame a métodos de otro archivo"
+
+6. qa-validator
+   - Modelo: ollama/devstral-small-2:latest (igual)
+   - Prompt: SE AGREGA paso 2b para errores 'Property does not exist'
+
+7. package-manager
+   - Modelo: ollama/devstral-small-2:latest (igual)
+   - Prompt: SE AGREGA "npm --version", "node --version", "npm run *"
+   - SE ELIMINA "npm ci" (no estaba en config-6 explícitamente, se
+     mantiene como npm install*)
+
+8. e2e-validator
+   - Modelo: ollama/devstral-small-2:latest (igual)
+   - Prompt: idéntico
+
+9. unit-tester
+   - Modelo: ollama/devstral-small-2:latest (igual)
+   - Prompt: idéntico
+
+PROVEEDORES:
+  1. ollama: MISMOS 3 modelos (devstral-small-2:latest, qwen3:8b-q4_K_M,
+     qwen3:32b). Idéntico a config-6.
+
+SKILLS:
+  MISMA LISTA que config-6. SIN cambios.
+
+AGENTS.md: PRESENTE. Mismo contenido que config-6 (estructura y
+  descripciones idénticas con devstral-small-2 como modelo principal).
+
+RESULTADO: Proyecto Angular con Dinosaur Runner incluido.
+================================================================================

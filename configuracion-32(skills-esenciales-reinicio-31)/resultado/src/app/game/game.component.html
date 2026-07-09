@@ -1,0 +1,14 @@
+<div class="game-container">
+  <canvas #gameCanvas width="800" height="400" class="game-canvas"></canvas>
+  
+  <div class="hud-overlay">
+    @if (gameService.isPlaying() || gameService.gameOver()) {
+      <div class="hud-score">Puntuación: {{ gameService.score() }}</div>
+      <div class="hud-high-score">Récord: {{ gameService.highScore() }}</div>
+    }
+  </div>
+  
+  <div class="instructions">
+    Espacio o clic para saltar
+  </div>
+</div>

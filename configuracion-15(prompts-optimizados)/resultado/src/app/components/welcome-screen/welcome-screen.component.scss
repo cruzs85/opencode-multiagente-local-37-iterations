@@ -1,0 +1,144 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.welcome {
+  text-align: center;
+
+  &__card {
+    background: white;
+    border-radius: 20px;
+    padding: 48px 40px 36px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 420px;
+    width: 90%;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__dino-icon {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 24px;
+  }
+
+  &__instructions {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.7;
+    margin: 0 0 20px;
+
+    kbd {
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    strong {
+      color: #667eea;
+    }
+  }
+
+  &__highscore {
+    font-size: 1.1rem;
+    color: #e67e22;
+    font-weight: 600;
+    margin: 0 0 20px;
+  }
+
+  &__start-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 14px 48px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__hint {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin: 16px 0 0;
+  }
+}
+
+// Dino icon CSS
+.dino-icon {
+  &__body {
+    position: absolute;
+    bottom: 10px;
+    left: 5px;
+    width: 50px;
+    height: 35px;
+    background: #535353;
+    border-radius: 8px 8px 4px 4px;
+  }
+
+  &__eye {
+    position: absolute;
+    top: 18px;
+    right: 12px;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      width: 3px;
+      height: 3px;
+      background: #333;
+      border-radius: 50%;
+    }
+  }
+
+  &__leg {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 12px;
+    background: #535353;
+    border-radius: 0 0 3px 3px;
+
+    &--left {
+      left: 12px;
+    }
+
+    &--right {
+      right: 12px;
+    }
+  }
+}

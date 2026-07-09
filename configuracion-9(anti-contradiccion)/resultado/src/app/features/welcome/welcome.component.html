@@ -1,0 +1,12 @@
+@if (gameService.status() === 'welcome') {
+  <div class="welcome-container">
+    <h1 class="title">🦖 DINO RUNNER</h1>
+    <div class="instructions">
+      <p>Presiona ESPACIO o haz clic para saltar. Puedes saltar dos veces seguidas.</p>
+      <p>Evita los obstáculos.</p>
+    </div>
+    <button class="start-button" (click)="startGame()">START</button>
+    <div class="high-score">🏆 Récord: {{ highScore() }}</div>
+    <div class="press-space">Presiona ESPACIO para empezar</div>
+  </div>
+}

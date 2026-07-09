@@ -1,0 +1,85 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  padding: var(--space-md);
+}
+
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2.5rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+}
+
+.instructions {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.instructions p {
+  margin: var(--space-xs) 0;
+}
+
+.score-display {
+  margin-bottom: var(--space-xl);
+  text-align: center;
+}
+
+.label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-right: var(--space-sm);
+  font-family: 'Press Start 2P', monospace;
+}
+
+.value {
+  color: var(--neon-yellow);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.neon-button {
+  padding: var(--space-md) var(--space-xl);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9rem;
+  background: var(--surface-button);
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.neon-button:hover {
+  background: var(--surface-button-hover);
+  box-shadow: 0 0 20px var(--neon-magenta), 0 0 40px var(--neon-magenta);
+  border-color: var(--neon-magenta);
+  color: var(--neon-magenta);
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.5rem;
+  }
+}

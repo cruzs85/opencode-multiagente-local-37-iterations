@@ -1,0 +1,7 @@
+<div class="app-container">
+  @switch (gameService.screenSignal()) {
+    @case ('welcome') { <app-welcome /> }
+    @case ('game') { <app-game /> }
+    @case ('gameOver') { <app-game-over /> }
+  }
+</div>

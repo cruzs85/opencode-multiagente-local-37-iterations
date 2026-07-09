@@ -1,0 +1,16 @@
+<div class="welcome">
+  <h1 class="welcome__title">🦖 DINO RUNNER</h1>
+  <p class="welcome__subtitle">¡Salta para esquivar los obstáculos!</p>
+  
+  <div class="welcome__instructions">
+    <ul>
+      <li>Presiona ESPACIO o FLECHA ARRIBA para saltar</li>
+      <li>Puedes saltar DOS veces seguidas (doble salto)</li>
+      <li>La velocidad aumenta con el tiempo</li>
+      <li>¡Consigue la máxima puntuación!</li>
+    </ul>
+  </div>
+  
+  <p class="welcome__high-score">🏆 Récord: {{ highScore() }}</p>
+  
+  <button class="welcome__button" (click)="onStartClick()">¡COMENZAR!</button>

@@ -1,0 +1,16 @@
+<div class="game-over-container">
+  <h1 class="game-over-title">GAME OVER</h1>
+  
+  <div class="score-container">
+    <p class="score">Your Score: {{ finalScore() }}</p>
+    <p class="score">High Score: {{ highScore() }}</p>
+  </div>
+
+  @if (finalScore() >= highScore() && finalScore() > 0) {
+    <div class="new-record-badge">NEW RECORD!</div>
+  }
+
+  <button class="play-again-button" (click)="playAgain()">
+    PLAY AGAIN
+  </button>
+</div>

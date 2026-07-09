@@ -1,0 +1,23 @@
+<div class="welcome">
+  <div class="welcome__card">
+    <h1 class="welcome__title">🦖 Dino Runner</h1>
+    <div class="welcome__dino-icon">
+      <div class="dino-icon__body"></div>
+      <div class="dino-icon__eye"></div>
+      <div class="dino-icon__leg dino-icon__leg--left"></div>
+      <div class="dino-icon__leg dino-icon__leg--right"></div>
+    </div>
+    <p class="welcome__instructions">
+      Presiona <kbd>Espacio</kbd> o haz clic para saltar<br>
+      Presiona <kbd>Espacio</kbd> dos veces para <strong>doble salto</strong><br>
+      ¡Esquiva los obstáculos y consigue el máximo puntaje!
+    </p>
+    @if (highScore() > 0) {
+      <p class="welcome__highscore">🏆 Récord: {{ highScore() }}</p>
+    }
+    <button class="welcome__start-btn" (click)="startGame()">
+      ¡Comenzar!
+    </button>
+    <p class="welcome__hint">Presiona Enter para iniciar</p>
+  </div>
+</div>

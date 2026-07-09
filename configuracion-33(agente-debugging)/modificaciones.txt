@@ -1,0 +1,31 @@
+MODIFICACIONES: configuracion-32 → configuracion-33
+==================================================
+Fuente: dino-runner24 | Comparado con: dino-runner23
+
+CAMBIOS EN opencode.json:
+- Añadido agente "debugging" (mode: subagent, model: ollama/model-debugging)
+  - Modelo basado en qwen3:32b con razonamiento profundo
+  - Propósito: análisis de causa raiz de bugs complejos
+- Explorer: ahora usa "ollama/model-agent-base" (antes "ollama/qwen3:32b")
+- Build prompt: añadido flujo de selección de agente de diagnóstico (explorer vs debugging)
+- Build prompt: añadida verificación con explorer después de scaffolding
+- code-writer prompt: añadido checklist Angular crítico
+- code-writer prompt: añadido toolcall #2 de verificación de skills
+- code-writer prompt: añadida sección VERIFICACIÓN POST-ESCRITURA
+- code-writer prompt: reglas de búsqueda de estructura con find y rutas absolutas
+- qa-validator: temperature cambiado de 0.1 a 0
+- qa-validator prompt: añadido CHECKLIST ANTES DE EMPEZAR detallado
+- qa-validator prompt: instrucciones de búsqueda con find y rutas absolutas
+- decomposer prompt: simplificado (angular-patterns + node-setup)
+
+CAMBIOS EN AGENTS.md:
+- Añadido agente "debugging" a la tabla
+- Explorer ahora usa model-agent-base (antes qwen3:32b)
+- Añadidas Reglas 13, 14, 15 (estructura del proyecto, verificar existencia, no stubs)
+- Añadida sección "Estructura del proyecto" con árbol de directorios
+- Skills: angular-patterns ahora también cargada por debugging
+- Flujo de trabajo: añadida sección DIAGNÓSTICO (explorer para simple, debugging para complejo)
+
+PROYECTO ANGULAR:
+- Presente en subcarpeta dino-runner/
+- Copiado a resultado/

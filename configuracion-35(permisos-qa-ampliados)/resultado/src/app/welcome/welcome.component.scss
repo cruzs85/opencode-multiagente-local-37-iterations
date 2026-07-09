@@ -1,0 +1,114 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  color: #00ff88;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+  color: #00ccff;
+  text-shadow: 0 0 5px #00ccff;
+}
+
+.instructions {
+  background-color: rgba(10, 10, 10, 0.8);
+  border: 1px solid #00ff88;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 40px;
+  max-width: 500px;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.instructions h2 {
+  margin-top: 0;
+  color: #00ccff;
+  text-shadow: 0 0 5px #00ccff;
+}
+
+.instructions ul {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.start-button {
+  background-color: transparent;
+  color: #00ff88;
+  border: 2px solid #00ff88;
+  border-radius: 5px;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.start-button:hover {
+  background-color: rgba(0, 255, 136, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88;
+  }
+  to {
+    text-shadow: 0 0 15px #00ff88, 0 0 25px #00ff88;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .instructions {
+    padding: 15px;
+  }
+  
+  .start-button {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+}

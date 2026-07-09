@@ -1,0 +1,57 @@
+================================================================================
+MODIFICACIONES: configuracion-25
+Comparación con: configuracion-21
+================================================================================
+
+Origen: uno/dino-runner16/
+Descripción: opencode-v1.json renombrado, con Angular
+
+RESUMEN DE CAMBIOS RESPECTO A CONFIG-21:
+  - ui-designer: ollama/model-ui-designer -> ollama/qwen3:32b
+
+AGENTES:
+
+build:
+  Modelo: opencode-go/kimi-k2.6 (IGUAL)
+
+decomposer:
+  Modelo: ollama/qwen3:32b (IGUAL)
+
+explorer:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+researcher:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+code-writer:
+  Modelo: ollama/model-code-writer (IGUAL)
+
+qa-validator:
+  Modelo: ollama/model-qa-validator (IGUAL)
+
+package-manager:
+  Modelo: ollama/qwen3-coder:30b (IGUAL)
+
+verifier:
+  Modelo: ollama/model-verifier (IGUAL)
+
+analyst:
+  Modelo: ollama/qwen3:32b (IGUAL)
+
+ui-designer:
+  Modelo: ollama/model-ui-designer -> ollama/qwen3:32b (CAMBIO)
+
+PROVEEDORES:
+
+  ollama
+  opencode-go
+
+SKILLS:
+  Skills path: ./.opencode/skills
+  Mismas skills que config-21 (orchestrator-protocol, handoff-protocol, anti-loop-protocol, etc.)
+
+PROBLEMAS REFERIDOS:
+  1. ui-designer cambia de ollama/model-ui-designer a ollama/qwen3:32b.
+
+RESULTADO: Proyecto Angular incluido en resultado/
+================================================================================

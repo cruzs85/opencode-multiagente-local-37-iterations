@@ -1,0 +1,38 @@
+<p-toast position="top-right" />
+<p-confirmDialog />
+
+<p-toolbar>
+  <ng-template #start>
+    <div class="toolbar-brand">
+      <i class="pi pi-map-marker" style="font-size: 1.5rem; color: var(--p-primary-color)"></i>
+      <span class="toolbar-brand__title">RouteTracker</span>
+    </div>
+  </ng-template>
+
+  <ng-template #end>
+    <p-breadcrumb
+      [model]="breadcrumbItems()"
+      [home]="breadcrumbHome"
+      styleClass="layout-breadcrumb"
+    />
+    <p-button
+      [icon]="sidebarVisible() ? 'pi pi-chevron-left' : 'pi pi-chevron-right'"
+      [text]="true"
+      (onClick)="toggleSidebar()"
+      pTooltip="Alternar panel lateral"
+      tooltipPosition="bottom"
+      styleClass="layout-toggle-btn"
+    />
+  </ng-template>
+</p-toolbar>
+
+<p-drawer [(visible)]="sidebarVisible" [closable]="false" styleClass="layout-sidebar">
+  <ng-template #content>
+    <app-route-stats />
+    <app-route-list />
+  </ng-template>
+</p-drawer>
+
+<main class="layout-content">
+  <app-map />
+</main>
