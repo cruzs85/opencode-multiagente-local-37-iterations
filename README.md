@@ -5,7 +5,7 @@
 [![Iteraciones](https://img.shields.io/badge/Iteraciones-37-orange)](.)
 [![Estado](https://img.shields.io/badge/Estado-Exploratorio-lightgrey)](.)
 
-Bitácora exploratoria que documenta la evolución de un sistema multi-agente con OpenCode para desarrollar un juego *Dinosaur Runner* en Angular 21. 37 configuraciones, 2 reinicios por saturación de complejidad, 10 conclusiones empíricas.
+Bitácora exploratoria que documenta la evolución de un sistema multi-agente local (Ollama) con OpenCode y para desarrollar un proyecto *Dinosaur Runner* en Angular 21. 37 configuraciones, 2 reinicios por saturación de complejidad, 10 conclusiones empíricas.
 
 > **Público objetivo:** Developer Workflow Engineers, AI Automation Engineers, Agent Engineering practitioners.
 >
