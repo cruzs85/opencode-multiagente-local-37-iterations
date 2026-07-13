@@ -7,7 +7,7 @@
 
 ---
 
-**¿Cansado de pagar APIs cloud en programación multiagentica que gasta tokens como si no hubiera un mañana?** Este repositorio documenta cómo construí un equipo de IA de un agente build online y 6 subagentes locales especializados que orquestan, escriben, testean y depuran código Angular 21 sin depender de proveedores externos. Lo que lo hace diferente: un orquestador online (kimi-k2.6) coordina subagentes locales (Ollama) con 5 skills exactas, memoria persistente y notificaciones Slack. **37 iteraciones de evolución real, 2 reinicios por saturación, 10 conclusiones empíricas.** Para desarrolladores que quieren agentes de IA propios, auditables y sin facturas sorpresa.
+**¿Cansado de pagar APIs cloud en programación multiagentica que gasta tokens como si no hubiera un mañana?** Este repositorio documenta cómo construí un equipo de IA que consta de un agente build online y 6 subagentes locales especializados que orquestan, escriben, testean y depuran código Angular 21 consumiendo una fracción de los tokens promedio para esta clase de proyectos. Lo que lo hace diferente: un orquestador online (kimi-k2.6) coordina subagentes locales (Ollama) con 5 skills exactas, memoria persistente y notificaciones Slack. **37 iteraciones de evolución real, 2 reinicios por saturación, 10 conclusiones empíricas.** Para desarrolladores que quieren agentes de IA propios, auditables y sin facturas sorpresa.
 
 > **Público objetivo:** Developer Workflow Engineers, AI Automation Engineers, Agent Engineering practitioners.
 
