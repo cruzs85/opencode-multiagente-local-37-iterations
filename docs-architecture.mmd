@@ -1,0 +1,40 @@
+graph TD
+    A[Usuario] --> B[OpenCode CLI]
+    B --> C[Orquestador build<br/>opencode-go/kimi-k2.6]
+    
+    C --> D[decomposer<br/>ollama/model-agent-base]
+    C --> E[code-writer<br/>ollama/model-agent-base]
+    C --> F[qa-validator<br/>ollama/model-agent-base]
+    C --> G[explorer<br/>ollama/model-agent-base]
+    C --> H[debugging<br/>ollama/model-debugging]
+    
+    D --> I[Planificación]
+    E --> J[Escritura de código]
+    F --> K[Build + Tests]
+    G --> L[Diagnóstico rápido]
+    H --> M[Análisis profundo]
+    
+    I --> N[Angular 21 Project]
+    J --> N
+    K --> N
+    L --> C
+    M --> C
+    
+    O[Ollama Local] --> P[model-agent-base<br/>qwen3-coder:30b]
+    O --> Q[model-debugging<br/>qwen3:32b]
+    
+    D --> O
+    E --> O
+    F --> O
+    G --> O
+    H --> O
+    
+    C --> R[opencode-mem<br/>Memoria Persistente]
+    C --> S[Slack<br/>#opencode-agents]
+    
+    style C fill:#ff9800,stroke:#e65100,stroke-width:3px,color:#fff
+    style O fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    style N fill:#2196f3,stroke:#1565c0,stroke-width:3px,color:#fff
+    style R fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
+    style S fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#fff
+    style A fill:#607d8b,stroke:#37474f,stroke-width:2px,color:#fff
