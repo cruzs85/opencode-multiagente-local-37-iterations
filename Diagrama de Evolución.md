@@ -7,7 +7,7 @@
 ## Diagrama de evolución (Mermaid)
 
 ```mermaid
-graph LR
+graph TD
     subgraph "Fase 1: Online"
         I1[Iteración 1<br/>Agente único<br/>8 agentes / 7 skills<br/>Cloud puro]
         I2[Iteración 2-3<br/>Refinamiento online<br/>Especialización temprana]
